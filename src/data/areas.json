@@ -1,0 +1,18 @@
+[
+  {
+    "code": "AR-01",
+    "name": "Production Line A"
+  },
+  {
+    "code": "AR-02",
+    "name": "Warehouse Section B"
+  },
+  {
+    "code": "AR-03",
+    "name": "Maintenance Workshop"
+  },
+  {
+    "code": "AR-04",
+    "name": "Administration Building"
+  }
+]

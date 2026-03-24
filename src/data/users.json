@@ -1,0 +1,18 @@
+[
+  {
+    "empId": "EMP-1001",
+    "name": "Ahmed Al-Qahtani"
+  },
+  {
+    "empId": "EMP-1002",
+    "name": "Faisal Al-Otaibi"
+  },
+  {
+    "empId": "EMP-1003",
+    "name": "Mohammed Al-Harbi"
+  },
+  {
+    "empId": "EMP-1004",
+    "name": "Saud Al-Dossari"
+  }
+]

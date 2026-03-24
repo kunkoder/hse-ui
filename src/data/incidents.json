@@ -1,0 +1,136 @@
+[
+  {
+    "id": "INC-1001",
+    "code": "INC-1001",
+    "type": "ACCIDENT",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "reportDate": "2026-03-20T10:30:00Z",
+    "description": "Worker slipped on wet floor in production area and sustained minor injury.",
+    "area": {
+      "code": "AREA-01",
+      "name": "Production Area"
+    },
+    "reportedBy": {
+      "empId": "EMP-001",
+      "name": "John Doe"
+    },
+    "involvedPeople": [
+      {
+        "empId": "EMP-010",
+        "name": "Ahmad Ali"
+      }
+    ],
+    "witnesses": [
+      {
+        "empId": "EMP-020",
+        "name": "Sarah Khan"
+      }
+    ],
+    "immediateAction": "Area was cleaned and warning sign placed",
+    "correctiveAction": "Improve housekeeping and install anti-slip flooring",
+    "medicalAttentionRequired": true,
+    "createdAt": "2026-03-20T11:00:00Z",
+    "updatedAt": "2026-03-21T09:00:00Z",
+    "updatedBy": {
+      "empId": "EMP-005",
+      "name": "Supervisor A"
+    },
+    "images": [
+      {
+        "id": "FILE-001",
+        "fileName": "incident-photo.jpg",
+        "filePath": "/uploads/incident-photo.jpg",
+        "fileType": "IMAGE",
+        "uploadedAt": "2026-03-20T11:10:00Z"
+      }
+    ],
+    "attachments": [
+      {
+        "id": "FILE-002",
+        "fileName": "report.pdf",
+        "filePath": "/uploads/report.pdf",
+        "fileType": "DOCUMENT",
+        "uploadedAt": "2026-03-20T11:15:00Z"
+      }
+    ],
+    "comments": [
+      {
+        "id": "COMM-001",
+        "content": "Initial investigation completed.",
+        "createdAt": "2026-03-20T12:00:00Z",
+        "createdBy": {
+          "empId": "EMP-005",
+          "name": "Supervisor A"
+        }
+      }
+    ]
+  },
+  {
+    "id": "INC-1002",
+    "code": "INC-1002",
+    "type": "NEAR_MISS",
+    "severity": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "reportDate": "2026-03-22T14:45:00Z",
+    "description": "Forklift almost collided with pedestrian in warehouse aisle.",
+    "area": {
+      "code": "AREA-02",
+      "name": "Warehouse"
+    },
+    "reportedBy": {
+      "empId": "EMP-002",
+      "name": "Jane Smith"
+    },
+    "involvedPeople": [
+      {
+        "empId": "EMP-030",
+        "name": "Michael Tan"
+      }
+    ],
+    "witnesses": [
+      {
+        "empId": "EMP-040",
+        "name": "Ali Rahman"
+      }
+    ],
+    "immediateAction": "Forklift operation stopped and area secured",
+    "correctiveAction": "Provide pedestrian walkways and safety training",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-22T15:00:00Z",
+    "updatedAt": "2026-03-23T08:30:00Z",
+    "updatedBy": {
+      "empId": "EMP-006",
+      "name": "Safety Officer"
+    },
+    "images": [
+      {
+        "id": "FILE-003",
+        "fileName": "near-miss.jpg",
+        "filePath": "/uploads/near-miss.jpg",
+        "fileType": "IMAGE",
+        "uploadedAt": "2026-03-22T15:05:00Z"
+      }
+    ],
+    "attachments": [
+      {
+        "id": "FILE-004",
+        "fileName": "investigation.docx",
+        "filePath": "/uploads/investigation.docx",
+        "fileType": "DOCUMENT",
+        "uploadedAt": "2026-03-22T15:10:00Z"
+      }
+    ],
+    "comments": [
+      {
+        "id": "COMM-002",
+        "content": "Root cause analysis in progress.",
+        "createdAt": "2026-03-22T16:00:00Z",
+        "createdBy": {
+          "empId": "EMP-006",
+          "name": "Safety Officer"
+        }
+      }
+    ]
+  }
+]

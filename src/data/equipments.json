@@ -1,0 +1,18 @@
+[
+  {
+    "code": "EQ-3001",
+    "name": "Air Compressor Unit A"
+  },
+  {
+    "code": "EQ-3002",
+    "name": "Cooling Tower Fan"
+  },
+  {
+    "code": "EQ-3003",
+    "name": "Hydraulic Pump System"
+  },
+  {
+    "code": "EQ-3004",
+    "name": "Diesel Generator 500kVA"
+  }
+]
