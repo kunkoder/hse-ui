@@ -77,14 +77,14 @@ export function AddIncidentModal() {
         id: `INC-${Math.floor(Math.random() * 9999)}`,
         code: `INC-${Math.floor(Math.random() * 9999)}`,
 
-        reportedAt: new Date(),
+        reportedAt: new Date().toISOString(),
 
         area: undefined,
         reportedBy: undefined,
         involvedPeople: undefined,
         witnesses: undefined,
 
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         updatedAt: undefined,
         updatedBy: undefined,
 

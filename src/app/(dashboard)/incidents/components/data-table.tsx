@@ -65,6 +65,8 @@ export function DataTable<TData, TValue>({
     React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
 
+  const [globalFilter, setGlobalFilter] = React.useState("")
+
   const table = useReactTable({
     data,
     columns,
@@ -73,8 +75,23 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      globalFilter
     },
     enableRowSelection: true,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, columnId, filterValue) => {
+    const search = filterValue.toLowerCase()
+
+    const description = row.getValue("description")?.toString().toLowerCase() || ""
+    const immediate = row.getValue("immediateAction")?.toString().toLowerCase() || ""
+    const corrective = row.getValue("correctiveAction")?.toString().toLowerCase() || ""
+
+    return (
+      description.includes(search) ||
+      immediate.includes(search) ||
+      corrective.includes(search)
+    )
+  },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

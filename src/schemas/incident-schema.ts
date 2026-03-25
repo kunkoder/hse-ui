@@ -19,7 +19,7 @@ export const incidentSchema = z.object({
   severity: z.string(),
   status: z.string(),
 
-  reportedAt: z.coerce.date(),
+  reportedAt: z.iso.datetime(),
   description: z.string(),
 
   area: z
@@ -47,8 +47,8 @@ export const incidentSchema = z.object({
   attachments: z.array(attachmentSchema).optional(),
   comments: z.array(commentSchema).optional(),
 
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date().optional(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime().optional(),
 
   updatedBy: z
     .object({

@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { DataTableViewOptions } from "./data-table-view-options"
+import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { FilterTask } from "./filter-task"
 
 import {
@@ -88,88 +89,52 @@ export function DataTableToolbar<TData>({
   const categoryFilter = table.getColumn("category")?.getFilterValue() as string | undefined
   const severityFilter = table.getColumn("severity")?.getFilterValue() as string | undefined
 
+  const globalFilter = table.getState().globalFilter as string
+
   return (
     <div className="space-y-4">
-      {/* Filters */}
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Select
-          value={statusFilter || "all"}
-          onValueChange={(v) => handleFilterChange("status", v)}
-        >
-          <SelectTrigger className="w-full cursor-pointer">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            {statuses.map((s) => (
-              <SelectItem key={s.value} value={s.value}>
-                <div className="flex items-center">
-                  {s.icon && (
-                    <s.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                  )}
-                  {s.label}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={categoryFilter || "all"}
-          onValueChange={(v) => handleFilterChange("category", v)}
-        >
-          <SelectTrigger className="w-full cursor-pointer">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c.value} value={c.value}>
-                {c.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={severityFilter || "all"}
-          onValueChange={(v) => handleFilterChange("severity", v)}
-        >
-          <SelectTrigger className="w-full cursor-pointer">
-            <SelectValue placeholder="Severity" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Severities</SelectItem>
-            {severities.map((p) => (
-              <SelectItem key={p.value} value={p.value}>
-                {p.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
 
       {/* Search + Actions */}
       <div className="space-y-2 md:flex md:items-center md:justify-between md:space-y-0">
         <div className="flex flex-1 items-center space-x-2">
           <Input
             placeholder="Search Incident"
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(e) =>
-              table.getColumn("title")?.setFilterValue(e.target.value)
-            }
+            value={globalFilter ?? ""}
+            onChange={(e) => table.setGlobalFilter(e.target.value)}
             className="w-[200px] lg:w-[300px]"
           />
+          {table.getColumn("severity") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("severity")}
+              title="Severity"
+              options={severities}
+            />
+          )}
+          {table.getColumn("status") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("status")}
+              title="Status"
+              options={statuses}
+            />
+          )}
+          {table.getColumn("category") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("category")}
+              title="Category"
+              options={categories}
+            />
+          )}
           <Button
             variant="outline"
-            onClick={() => table.resetColumnFilters()}
-            disabled={!isFiltered}
+            onClick={() => table.setGlobalFilter("")}
+            disabled={!globalFilter}
             className="px-3 mr-2 lg:mr-0"
           >
             <RefreshCcw className="h-4 w-4" />
             <span className="hidden lg:block">Reset</span>
           </Button>
         </div>
+
 
         <div className="flex flex-col gap-2 mt-2 md:flex-row md:mt-0 md:gap-2">
           <DataTableViewOptions table={table} />
