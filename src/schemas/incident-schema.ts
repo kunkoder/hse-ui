@@ -15,11 +15,11 @@ export const incidentSchema = z.object({
   id: z.string(),
   code: z.string(),
 
-  type: z.string(),
+  category: z.string(),
   severity: z.string(),
   status: z.string(),
 
-  reportDate: z.coerce.date(),
+  reportedAt: z.coerce.date(),
   description: z.string(),
 
   area: z

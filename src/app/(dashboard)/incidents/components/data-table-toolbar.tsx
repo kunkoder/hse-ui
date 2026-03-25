@@ -17,8 +17,12 @@ import {
 import { DataTableViewOptions } from "./data-table-view-options"
 import { FilterTask } from "./filter-task"
 
-import { categories, priorities, statuses } from "../data/data"
-import { updateTaskApi } from "@/store/task-slice"
+import {
+  categories,
+  statuses,
+  severities,
+} from "@/types/incident"
+import { updateIncidentApi } from "@/store/incident-slice"
 import type { Task } from "../data/schema"
 
 interface DataTableToolbarProps<TData> {
@@ -34,7 +38,7 @@ export function DataTableToolbar<TData>({
 
   const selectedRows = table.getSelectedRowModel().rows
 
-  const selectedTasks = useMemo(
+  const selectedIncidents = useMemo(
     () => selectedRows.map((row) => row.original as Task),
     [selectedRows]
   )
@@ -42,31 +46,31 @@ export function DataTableToolbar<TData>({
   const [bulkValues, setBulkValues] = useState<{
     status?: string
     category?: string
-    priority?: string
+    severity?: string
   }>({})
 
   const handleBulkChange = (
-    field: "status" | "category" | "priority",
+    field: "status" | "category" | "severity",
     value: string
   ) => {
     setBulkValues((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleSubmitBulk = () => {
-    if (!selectedTasks.length) return
+    if (!selectedIncidents.length) return
 
     const hasChanges =
-      bulkValues.status || bulkValues.category || bulkValues.priority
+      bulkValues.status || bulkValues.category || bulkValues.severity
 
     if (!hasChanges) return
 
-    for (const task of selectedTasks) {
+    for (const incident of selectedIncidents) {
       dispatch(
-        updateTaskApi({
-          ...task,
+        updateIncidentApi({
+          ...incident,
           ...(bulkValues.status && { status: bulkValues.status }),
           ...(bulkValues.category && { category: bulkValues.category }),
-          ...(bulkValues.priority && { priority: bulkValues.priority }),
+          ...(bulkValues.severity && { severity: bulkValues.severity }),
         }) as any
       )
     }
@@ -82,7 +86,7 @@ export function DataTableToolbar<TData>({
 
   const statusFilter = table.getColumn("status")?.getFilterValue() as string | undefined
   const categoryFilter = table.getColumn("category")?.getFilterValue() as string | undefined
-  const priorityFilter = table.getColumn("priority")?.getFilterValue() as string | undefined
+  const severityFilter = table.getColumn("severity")?.getFilterValue() as string | undefined
 
   return (
     <div className="space-y-4">
@@ -128,22 +132,17 @@ export function DataTableToolbar<TData>({
         </Select>
 
         <Select
-          value={priorityFilter || "all"}
-          onValueChange={(v) => handleFilterChange("priority", v)}
+          value={severityFilter || "all"}
+          onValueChange={(v) => handleFilterChange("severity", v)}
         >
           <SelectTrigger className="w-full cursor-pointer">
-            <SelectValue placeholder="Priority" />
+            <SelectValue placeholder="Severity" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Priorities</SelectItem>
-            {priorities.map((p) => (
+            <SelectItem value="all">All Severities</SelectItem>
+            {severities.map((p) => (
               <SelectItem key={p.value} value={p.value}>
-                <div className="flex items-center">
-                  {p.icon && (
-                    <p.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                  )}
-                  {p.label}
-                </div>
+                {p.label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -154,7 +153,7 @@ export function DataTableToolbar<TData>({
       <div className="space-y-2 md:flex md:items-center md:justify-between md:space-y-0">
         <div className="flex flex-1 items-center space-x-2">
           <Input
-            placeholder="Search Task"
+            placeholder="Search Incident"
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
             onChange={(e) =>
               table.getColumn("title")?.setFilterValue(e.target.value)
@@ -179,10 +178,10 @@ export function DataTableToolbar<TData>({
       </div>
 
       {/* Bulk Actions */}
-      {selectedTasks.length > 0 && (
+      {selectedIncidents.length > 0 && (
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-3 p-3 border rounded-md bg-muted/50">
           <span className="text-sm font-medium">
-            {selectedTasks.length} selected
+            {selectedIncidents.length} selected
           </span>
 
           <Select
@@ -218,14 +217,14 @@ export function DataTableToolbar<TData>({
           </Select>
 
           <Select
-            value={bulkValues.priority}
-            onValueChange={(v) => handleBulkChange("priority", v)}
+            value={bulkValues.severity}
+            onValueChange={(v) => handleBulkChange("severity", v)}
           >
             <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Update Priority" />
+              <SelectValue placeholder="Update Severity" />
             </SelectTrigger>
             <SelectContent>
-              {priorities.map((p) => (
+              {severities.map((p) => (
                 <SelectItem key={p.value} value={p.value}>
                   {p.label}
                 </SelectItem>
@@ -238,7 +237,7 @@ export function DataTableToolbar<TData>({
             disabled={
               !bulkValues.status &&
               !bulkValues.category &&
-              !bulkValues.priority
+              !bulkValues.severity
             }
             className="w-full md:w-auto cursor-pointer"
           >

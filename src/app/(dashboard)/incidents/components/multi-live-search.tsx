@@ -74,7 +74,7 @@ export function MultiLiveSearch<T>({
   const [debounced = ""] = useDebounce(query, 500)
 
   const { data = [], isLoading } = queryHook(buildQuery(debounced), {
-    skip: !debounced,
+    skip: false,
   })
 
   // Close dropdown when clicking outside
@@ -189,7 +189,10 @@ export function MultiLiveSearch<T>({
                   <div
                     key={i}
                     className="flex items-center p-2 hover:bg-accent cursor-pointer text-sm"
-                    onClick={() => handleSelect(item)}
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      handleSelect(item)
+                    }}
                   >
                     <div className="flex-1">
                       {renderItem ? (

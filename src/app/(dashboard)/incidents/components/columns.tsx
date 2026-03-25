@@ -8,13 +8,34 @@ import { Checkbox } from "@/components/ui/checkbox"
 import type { Incident } from "@/schemas/incident-schema"
 
 import {
-  incidentTypes,
-  incidentStatuses,
-  incidentSeverities,
+  categories,
+  statuses,
+  severities,
 } from "@/types/incident"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
+
+const formatDateTime = (date?: Date) => {
+  if (!date) return "-"
+
+  const d = new Date(date)
+
+  const day = String(d.getDate()).padStart(2, "0")
+  const month = String(d.getMonth() + 1).padStart(2, "0")
+  const year = d.getFullYear()
+
+  const hours = String(d.getHours()).padStart(2, "0")
+  const minutes = String(d.getMinutes()).padStart(2, "0")
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`
+}
+
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData, TValue> {
+    title?: string
+  }
+}
 
 export const columns: ColumnDef<Incident>[] = [
   {
@@ -45,6 +66,9 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "code",
+    meta: {
+      title: "Code",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Code" />
     ),
@@ -56,13 +80,16 @@ export const columns: ColumnDef<Incident>[] = [
   },
 
   {
-    accessorKey: "type",
+    accessorKey: "category",
+    meta: {
+      title: "Category",
+    },
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
+      <DataTableColumnHeader column={column} title={"Category"} />
     ),
     cell: ({ row }) => {
-      const value = row.getValue("type") as string
-      const config = incidentTypes.find((t) => t.value === value)
+      const value = row.getValue("category") as string
+      const config = categories.find((c) => c.value === value)
       if (!config) return null
       return (
         <div className="flex items-center gap-2">
@@ -75,17 +102,23 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "severity",
+    meta: {
+      title: "Severity",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Severity" />
     ),
     cell: ({ row }) => {
       const value = row.getValue("severity") as string
-      const config = incidentSeverities.find((s) => s.value === value)
+      const config = severities.find((s) => s.value === value)
+
       if (!config) return "-"
-      const Icon = config.icon
+
       return (
-        <Badge variant="outline" className="text-xs flex items-center gap-1">
-          <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+        <Badge
+          variant="outline"
+          className={`text-xs ${config.color}`}
+        >
           {config.label}
         </Badge>
       )
@@ -94,17 +127,23 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "status",
+    meta: {
+      title: "Status",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
       const value = row.getValue("status") as string
-      const config = incidentStatuses.find((s) => s.value === value)
+      const config = statuses.find((s) => s.value === value)
+
       if (!config) return "-"
-      const Icon = config.icon
+
       return (
-        <Badge variant="outline" className="text-xs flex items-center gap-1">
-          <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+        <Badge
+          variant="outline"
+          className="text-xs"
+        >
           {config.label}
         </Badge>
       )
@@ -113,29 +152,43 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "description",
+    meta: {
+      title: "Description",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
     ),
     cell: ({ row }) => (
-      <div className="max-w-[400px] truncate text-sm text-muted-foreground">
+      <div className="max-w-[300px] truncate text-xs text-muted-foreground">
         {row.getValue("description") || "-"}
       </div>
     ),
   },
 
   {
-    accessorKey: "reportDate",
+    accessorKey: "reportedAt",
+    meta: {
+      title: "Report Time",
+    },
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Report Date" />
+      <DataTableColumnHeader column={column} title="Report Time" />
     ),
     cell: ({ row }) => {
-      const date = row.getValue("reportDate") as Date
-      return <div className="text-sm">{date?.toLocaleDateString() || "-"}</div>
+      const date = row.getValue("reportedAt") as Date | undefined
+
+      return (
+        <div className="text-xs text-muted-foreground">
+          {formatDateTime(date)}
+        </div>
+      )
     },
   },
 
   {
     accessorKey: "area",
+    meta: {
+      title: "Area",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Area" />
     ),
@@ -157,6 +210,9 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "reportedBy",
+    meta: {
+      title: "Reported By",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Reported By" />
     ),
@@ -178,8 +234,11 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "involvedPeople",
+    meta: {
+      title: "Involved People",
+    },
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Involved" />
+      <DataTableColumnHeader column={column} title="Involved People" />
     ),
     cell: ({ row }) => {
       const people = row.getValue("involvedPeople") as
@@ -202,6 +261,9 @@ export const columns: ColumnDef<Incident>[] = [
 
   {
     accessorKey: "witnesses",
+    meta: {
+      title: "Witnesses",
+    },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Witnesses" />
     ),
@@ -219,6 +281,119 @@ export const columns: ColumnDef<Incident>[] = [
               {p.name} ({p.empId})
             </Badge>
           ))}
+        </div>
+      )
+    },
+  },
+
+  {
+    accessorKey: "immediateAction",
+    meta: {
+      title: "Immediate Action",
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Immediate Action" />
+    ),
+    cell: ({ row }) => (
+      <div className="max-w-[300px] truncate text-xs text-muted-foreground">
+        {row.getValue("immediateAction") || "-"}
+      </div>
+    ),
+  },
+
+  {
+    accessorKey: "correctiveAction",
+    meta: {
+      title: "Corrective Action",
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Corrective Action" />
+    ),
+    cell: ({ row }) => (
+      <div className="max-w-[300px] truncate text-xs text-muted-foreground">
+        {row.getValue("correctiveAction") || "-"}
+      </div>
+    ),
+  },
+
+  {
+    accessorKey: "medicalAttentionRequired",
+    meta: {
+      title: "Medical Requirement",
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Medical Requirement" />
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue("medicalAttentionRequired") as boolean
+
+      return (
+        <Badge
+          variant={value ? "destructive" : "secondary"}
+          className="text-xs"
+        >
+          {value ? "Yes" : "No"}
+        </Badge>
+      )
+    },
+  },
+
+  {
+    accessorKey: "createdAt",
+    meta: {
+      title: "Creation Time",
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Creation Time" />
+    ),
+    cell: ({ row }) => {
+      const date = row.getValue("createdAt") as Date
+      return (
+        <div className="text-xs text-muted-foreground">
+          {formatDateTime(date)}
+        </div>
+      )
+    },
+  },
+
+  {
+    accessorKey: "updatedAt",
+    meta: {
+      title: "Update Time",
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Update Time" />
+    ),
+    cell: ({ row }) => {
+      const date = row.getValue("updatedAt") as Date | undefined
+
+      return (
+        <div className="text-xs text-muted-foreground">
+          {formatDateTime(date)}
+        </div>
+      )
+    },
+  },
+
+  {
+    accessorKey: "updatedBy",
+    meta: {
+      title: "Updated by",
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated By" />
+    ),
+    cell: ({ row }) => {
+      const user = row.getValue("updatedBy") as
+        | { empId: string; name: string }
+        | undefined
+
+      if (!user) return "-"
+
+      return (
+        <div className="flex flex-col text-xs">
+          <span className="font-medium">{user.name}</span>
+          <span className="text-muted-foreground">{user.empId}</span>
         </div>
       )
     },

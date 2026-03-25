@@ -2,135 +2,173 @@
   {
     "id": "INC-1001",
     "code": "INC-1001",
-    "type": "ACCIDENT",
+    "category": "ACCIDENT",
     "severity": "HIGH",
-    "status": "OPEN",
-    "reportDate": "2026-03-20T10:30:00Z",
+    "status": "REPORTED",
+    "reportedAt": "2026-03-20T10:30:00Z",
     "description": "Worker slipped on wet floor in production area and sustained minor injury.",
-    "area": {
-      "code": "AREA-01",
-      "name": "Production Area"
-    },
-    "reportedBy": {
-      "empId": "EMP-001",
-      "name": "John Doe"
-    },
-    "involvedPeople": [
-      {
-        "empId": "EMP-010",
-        "name": "Ahmad Ali"
-      }
-    ],
-    "witnesses": [
-      {
-        "empId": "EMP-020",
-        "name": "Sarah Khan"
-      }
-    ],
-    "immediateAction": "Area was cleaned and warning sign placed",
-    "correctiveAction": "Improve housekeeping and install anti-slip flooring",
+    "area": { "code": "AREA-01", "name": "Production Area" },
+    "reportedBy": { "empId": "EMP-001", "name": "John Doe" },
+    "involvedPeople": [{ "empId": "EMP-010", "name": "Ahmad Ali" }],
+    "witnesses": [{ "empId": "EMP-020", "name": "Sarah Khan" }],
+    "immediateAction": "Area cleaned and warning sign placed",
+    "correctiveAction": "Improve housekeeping",
     "medicalAttentionRequired": true,
     "createdAt": "2026-03-20T11:00:00Z",
     "updatedAt": "2026-03-21T09:00:00Z",
-    "updatedBy": {
-      "empId": "EMP-005",
-      "name": "Supervisor A"
-    },
-    "images": [
-      {
-        "id": "FILE-001",
-        "fileName": "incident-photo.jpg",
-        "filePath": "/uploads/incident-photo.jpg",
-        "fileType": "IMAGE",
-        "uploadedAt": "2026-03-20T11:10:00Z"
-      }
-    ],
-    "attachments": [
-      {
-        "id": "FILE-002",
-        "fileName": "report.pdf",
-        "filePath": "/uploads/report.pdf",
-        "fileType": "DOCUMENT",
-        "uploadedAt": "2026-03-20T11:15:00Z"
-      }
-    ],
-    "comments": [
-      {
-        "id": "COMM-001",
-        "content": "Initial investigation completed.",
-        "createdAt": "2026-03-20T12:00:00Z",
-        "createdBy": {
-          "empId": "EMP-005",
-          "name": "Supervisor A"
-        }
-      }
-    ]
+    "updatedBy": { "empId": "EMP-005", "name": "Supervisor A" }
   },
   {
     "id": "INC-1002",
     "code": "INC-1002",
-    "type": "NEAR_MISS",
+    "category": "INCIDENT",
     "severity": "MEDIUM",
-    "status": "IN_PROGRESS",
-    "reportDate": "2026-03-22T14:45:00Z",
-    "description": "Forklift almost collided with pedestrian in warehouse aisle.",
-    "area": {
-      "code": "AREA-02",
-      "name": "Warehouse"
-    },
-    "reportedBy": {
-      "empId": "EMP-002",
-      "name": "Jane Smith"
-    },
-    "involvedPeople": [
-      {
-        "empId": "EMP-030",
-        "name": "Michael Tan"
-      }
-    ],
-    "witnesses": [
-      {
-        "empId": "EMP-040",
-        "name": "Ali Rahman"
-      }
-    ],
-    "immediateAction": "Forklift operation stopped and area secured",
-    "correctiveAction": "Provide pedestrian walkways and safety training",
+    "status": "UNDER_INVESTIGATION",
+    "reportedAt": "2026-03-21T09:00:00Z",
+    "description": "Minor chemical spill contained quickly.",
+    "area": { "code": "AREA-02", "name": "Chemical Storage" },
+    "reportedBy": { "empId": "EMP-002", "name": "Jane Smith" },
+    "involvedPeople": [{ "empId": "EMP-011", "name": "Omar Hassan" }],
+    "witnesses": [{ "empId": "EMP-021", "name": "Lina Noor" }],
+    "immediateAction": "Spill kit used",
+    "correctiveAction": "Improve labeling",
     "medicalAttentionRequired": false,
-    "createdAt": "2026-03-22T15:00:00Z",
-    "updatedAt": "2026-03-23T08:30:00Z",
-    "updatedBy": {
-      "empId": "EMP-006",
-      "name": "Safety Officer"
-    },
-    "images": [
-      {
-        "id": "FILE-003",
-        "fileName": "near-miss.jpg",
-        "filePath": "/uploads/near-miss.jpg",
-        "fileType": "IMAGE",
-        "uploadedAt": "2026-03-22T15:05:00Z"
-      }
-    ],
-    "attachments": [
-      {
-        "id": "FILE-004",
-        "fileName": "investigation.docx",
-        "filePath": "/uploads/investigation.docx",
-        "fileType": "DOCUMENT",
-        "uploadedAt": "2026-03-22T15:10:00Z"
-      }
-    ],
-    "comments": [
-      {
-        "id": "COMM-002",
-        "content": "Root cause analysis in progress.",
-        "createdAt": "2026-03-22T16:00:00Z",
-        "createdBy": {
-          "empId": "EMP-006",
-          "name": "Safety Officer"
-        }
-      }
-    ]
+    "createdAt": "2026-03-21T09:30:00Z"
+  },
+  {
+    "id": "INC-1003",
+    "code": "INC-1003",
+    "category": "NEAR_MISS",
+    "severity": "LOW",
+    "status": "RESOLVED",
+    "reportedAt": "2026-03-22T08:15:00Z",
+    "description": "Worker almost tripped over loose cable.",
+    "area": { "code": "AREA-03", "name": "Office" },
+    "reportedBy": { "empId": "EMP-003", "name": "Ali Rahman" },
+    "involvedPeople": [{ "empId": "EMP-012", "name": "Sara Ali" }],
+    "witnesses": [{ "empId": "EMP-022", "name": "David Lee" }],
+    "immediateAction": "Cable secured",
+    "correctiveAction": "Cable management improved",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-22T08:30:00Z"
+  },
+  {
+    "id": "INC-1004",
+    "code": "INC-1004",
+    "category": "UNSAFE_ACT",
+    "severity": "HIGH",
+    "status": "REPORTED",
+    "reportedAt": "2026-03-23T11:00:00Z",
+    "description": "Worker not wearing PPE in hazardous area.",
+    "area": { "code": "AREA-04", "name": "Construction Site" },
+    "reportedBy": { "empId": "EMP-004", "name": "Hassan Ali" },
+    "involvedPeople": [{ "empId": "EMP-013", "name": "Bilal Khan" }],
+    "witnesses": [{ "empId": "EMP-023", "name": "Fatima Noor" }],
+    "immediateAction": "Worker removed from site",
+    "correctiveAction": "PPE training",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-23T11:20:00Z"
+  },
+  {
+    "id": "INC-1005",
+    "code": "INC-1005",
+    "category": "UNSAFE_CONDITION",
+    "severity": "CRITICAL",
+    "status": "UNDER_INVESTIGATION",
+    "reportedAt": "2026-03-24T07:45:00Z",
+    "description": "Exposed wiring found in electrical panel.",
+    "area": { "code": "AREA-05", "name": "Electrical Room" },
+    "reportedBy": { "empId": "EMP-005", "name": "Supervisor A" },
+    "involvedPeople": [{ "empId": "EMP-014", "name": "Yousef Ahmed" }],
+    "witnesses": [{ "empId": "EMP-024", "name": "Nadia Karim" }],
+    "immediateAction": "Area isolated",
+    "correctiveAction": "Repair wiring",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-24T08:00:00Z"
+  },
+  {
+    "id": "INC-1006",
+    "code": "INC-1006",
+    "category": "PROPERTY_DAMAGE",
+    "severity": "MEDIUM",
+    "status": "CLOSED",
+    "reportedAt": "2026-03-24T13:00:00Z",
+    "description": "Forklift damaged storage rack.",
+    "area": { "code": "AREA-06", "name": "Warehouse" },
+    "reportedBy": { "empId": "EMP-006", "name": "Safety Officer" },
+    "involvedPeople": [{ "empId": "EMP-015", "name": "Chen Wei" }],
+    "witnesses": [{ "empId": "EMP-025", "name": "Ravi Kumar" }],
+    "immediateAction": "Area secured",
+    "correctiveAction": "Operator retraining",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-24T13:20:00Z"
+  },
+  {
+    "id": "INC-1007",
+    "code": "INC-1007",
+    "category": "ACCIDENT",
+    "severity": "CRITICAL",
+    "status": "REPORTED",
+    "reportedAt": "2026-03-25T06:30:00Z",
+    "description": "Serious fall from height.",
+    "area": { "code": "AREA-07", "name": "Roof" },
+    "reportedBy": { "empId": "EMP-007", "name": "Manager B" },
+    "involvedPeople": [{ "empId": "EMP-016", "name": "Ahmed Saleh" }],
+    "witnesses": [{ "empId": "EMP-026", "name": "Imran Shah" }],
+    "immediateAction": "Emergency services called",
+    "correctiveAction": "Install guardrails",
+    "medicalAttentionRequired": true,
+    "createdAt": "2026-03-25T06:45:00Z"
+  },
+  {
+    "id": "INC-1008",
+    "code": "INC-1008",
+    "category": "INCIDENT",
+    "severity": "LOW",
+    "status": "RESOLVED",
+    "reportedAt": "2026-03-25T09:00:00Z",
+    "description": "Minor equipment malfunction.",
+    "area": { "code": "AREA-08", "name": "Maintenance" },
+    "reportedBy": { "empId": "EMP-008", "name": "Technician A" },
+    "involvedPeople": [{ "empId": "EMP-017", "name": "Huda Malik" }],
+    "witnesses": [{ "empId": "EMP-027", "name": "Samir Ali" }],
+    "immediateAction": "Machine stopped",
+    "correctiveAction": "Routine inspection",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-25T09:10:00Z"
+  },
+  {
+    "id": "INC-1009",
+    "code": "INC-1009",
+    "category": "UNSAFE_ACT",
+    "severity": "MEDIUM",
+    "status": "UNDER_INVESTIGATION",
+    "reportedAt": "2026-03-25T10:15:00Z",
+    "description": "Improper lifting technique observed.",
+    "area": { "code": "AREA-09", "name": "Loading Dock" },
+    "reportedBy": { "empId": "EMP-009", "name": "Inspector A" },
+    "involvedPeople": [{ "empId": "EMP-018", "name": "Khalid Noor" }],
+    "witnesses": [{ "empId": "EMP-028", "name": "Ola Hassan" }],
+    "immediateAction": "Work stopped",
+    "correctiveAction": "Training scheduled",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-25T10:30:00Z"
+  },
+  {
+    "id": "INC-1010",
+    "code": "INC-1010",
+    "category": "UNSAFE_CONDITION",
+    "severity": "HIGH",
+    "status": "CLOSED",
+    "reportedAt": "2026-03-25T11:45:00Z",
+    "description": "Blocked emergency exit.",
+    "area": { "code": "AREA-10", "name": "Main Building" },
+    "reportedBy": { "empId": "EMP-010", "name": "Admin A" },
+    "involvedPeople": [{ "empId": "EMP-019", "name": "Zaid Khan" }],
+    "witnesses": [{ "empId": "EMP-029", "name": "Maya Singh" }],
+    "immediateAction": "Exit cleared",
+    "correctiveAction": "Routine checks",
+    "medicalAttentionRequired": false,
+    "createdAt": "2026-03-25T12:00:00Z"
   }
 ]

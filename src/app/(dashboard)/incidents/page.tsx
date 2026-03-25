@@ -16,7 +16,7 @@ import {
 import { ButtonGroup } from "@/components/ui/button-group"
 
 import { Button } from "@/components/ui/button"
-import { AddIncidentModal } from "./components/add-task-modal"
+import { AddIncidentModal } from "./components/add-incident-modal"
 
 import {
   Card,

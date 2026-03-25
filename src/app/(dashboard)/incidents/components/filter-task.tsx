@@ -278,7 +278,7 @@ export function FilterTask() {
             <MultiLiveSearch<any>
               label="Equipments"
               placeholder="Search equipment..."
-              rangeEnabled={true}
+              rangeEnabled={false}
               queryHook={useSearchEquipmentQuery}
               buildQuery={(search) => search}
               getValue={(eq) => eq.code}

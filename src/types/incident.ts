@@ -2,18 +2,16 @@ import {
   AlertTriangle,
   ShieldAlert,
   Siren,
-  Activity,
+  UserX,
+  Hammer,
   Eye,
-  Clock,
-  PlayCircle,
-  CheckCircle2,
-  XCircle,
-  ArrowDown,
-  Minus,
-  ArrowUp,
+  CircleDot,
+  BadgeCheck,
+  Search,
+  CheckCheck,
 } from "lucide-react";
 
-export const incidentTypes = [
+export const categories = [
   {
     value: "ACCIDENT",
     label: "Accident",
@@ -32,7 +30,7 @@ export const incidentTypes = [
   {
     value: "UNSAFE_ACT",
     label: "Unsafe Act",
-    icon: Activity,
+    icon: UserX,
   },
   {
     value: "UNSAFE_CONDITION",
@@ -42,52 +40,54 @@ export const incidentTypes = [
   {
     value: "PROPERTY_DAMAGE",
     label: "Property Damage",
-    icon: AlertTriangle,
+    icon: Hammer,
   },
 ];
 
-export const incidentStatuses = [
+export const statuses = [
   {
-    value: "OPEN",
-    label: "Open",
-    icon: Clock,
+    value: "REPORTED",
+    label: "Reported",
+    icon: CircleDot,
   },
   {
-    value: "IN_PROGRESS",
-    label: "In Progress",
-    icon: PlayCircle,
+    value: "UNDER_INVESTIGATION",
+    label: "Under Investigation",
+    icon: Search,
   },
   {
     value: "RESOLVED",
     label: "Resolved",
-    icon: CheckCircle2,
+    icon: CheckCheck,
   },
   {
     value: "CLOSED",
     label: "Closed",
-    icon: XCircle,
+    icon: BadgeCheck,
   },
 ];
 
-export const incidentSeverities = [
+export const severities = [
   {
     value: "LOW",
     label: "Low",
-    icon: ArrowDown,
+    color:
+      "text-green-600 border-green-500",
   },
   {
     value: "MEDIUM",
     label: "Medium",
-    icon: Minus,
+    color:
+      "text-yellow-600 border-yellow-500",
   },
   {
     value: "HIGH",
     label: "High",
-    icon: ArrowUp,
+    color: "text-orange-600 border-orange-500",
   },
   {
     value: "CRITICAL",
     label: "Critical",
-    icon: AlertTriangle,
+    color: "text-red-600 border-red-600",
   },
 ];

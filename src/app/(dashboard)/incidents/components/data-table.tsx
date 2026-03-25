@@ -53,9 +53,14 @@ export function DataTable<TData, TValue>({
 
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      description: false,
-    })
+  React.useState<VisibilityState>({
+    description: false,
+    immediateAction: false,
+    correctiveAction: false,
+    medicalAttentionRequired: false,
+    createdAt: false,
+    updatedAt: false,
+  })
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -87,7 +92,7 @@ export function DataTable<TData, TValue>({
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

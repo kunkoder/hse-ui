@@ -12,6 +12,10 @@ import { toast } from "sonner";
 const PAGE_SIZE = 10;
 const MAX_INCIDENTS = 200;
 
+type UpdateIncidentPayload = Pick<Incident, "id"> & Partial<
+	Pick<Incident, "status" | "category" | "severity">
+>
+
 let simulatedDB: Incident[] = z
 	.array(incidentSchema)
 	.parse(incidentsData);
@@ -46,7 +50,9 @@ export const createIncident = createAsyncThunk<Incident, Incident>(
 	}
 );
 
-export const updateIncidentApi = createAsyncThunk<Incident, Incident>(
+
+
+export const updateIncidentApi = createAsyncThunk<Incident, UpdateIncidentPayload>(
 	"incidents/updateIncident",
 	async (updatedIncident) => {
 		await new Promise((res) => setTimeout(res, 200));
@@ -55,11 +61,15 @@ export const updateIncidentApi = createAsyncThunk<Incident, Incident>(
 			(i) => i.id === updatedIncident.id
 		);
 
-		if (index !== -1) simulatedDB[index] = updatedIncident;
+		if (index !== -1) {
+			simulatedDB[index] = {
+				...simulatedDB[index],
+				...updatedIncident,
+			};
+		}
 
-		return updatedIncident;
-	}
-);
+		return simulatedDB[index];
+	});
 
 export const deleteIncidentApi = createAsyncThunk<string, string>(
 	"incidents/deleteIncident",
