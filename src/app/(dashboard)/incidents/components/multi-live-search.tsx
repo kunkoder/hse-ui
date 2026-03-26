@@ -11,6 +11,7 @@ import { X, Check, Code } from "lucide-react"
 import { useDebounce } from "@/hooks/use-debounce"
 
 type MultiLiveSearchProps<T> = {
+  showLabel?: boolean
   label?: string
   placeholder?: string
   rangePlaceholder?: string
@@ -52,6 +53,7 @@ const expandRange = (input: string): string[] => {
 }
 
 export function MultiLiveSearch<T>({
+  showLabel = false,
   label,
   placeholder = "Search...",
   rangePlaceholder = "ITEM-001-005",
@@ -71,25 +73,20 @@ export function MultiLiveSearch<T>({
   const [error, setError] = useState("")
 
   const ref = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLDivElement>(null)
   const [debounced = ""] = useDebounce(query, 500)
 
-  const { data = [], isLoading } = queryHook(buildQuery(debounced), {
-    skip: false,
-  })
+  const { data = [], isLoading } = queryHook(buildQuery(debounced), { skip: false })
 
-  // Close dropdown when clicking outside
-  const inputRef = useRef<HTMLDivElement>(null);
-
-  // Replace your useEffect with this:
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-        setOpen(false);
+        setOpen(false)
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const handleSelect = (item: T) => {
     const value = getValue(item)
@@ -111,9 +108,7 @@ export function MultiLiveSearch<T>({
   const handleRangeApply = () => {
     try {
       const parsed = expandRange(range)
-      const validCodes = parsed.filter((code) =>
-        data.some((item) => getValue(item) === code)
-      )
+      const validCodes = parsed.filter((code) => data.some((item) => getValue(item) === code))
 
       if (validCodes.length === 0) {
         setError("No codes in range match available data")
@@ -131,8 +126,8 @@ export function MultiLiveSearch<T>({
   }
 
   return (
-    <div className={`grid ${rangeEnabled ? "gap-2" : "gap-3"}`} ref={ref}>
-      {label && (
+    <div className="grid gap-2 relative" ref={ref}>
+      {showLabel && label && (
         <div className="flex justify-between items-center">
           <Label>{label}</Label>
           {rangeEnabled && (
@@ -141,8 +136,7 @@ export function MultiLiveSearch<T>({
               variant={showRange ? "default" : "outline"}
               className={`cursor-pointer transition-colors ${showRange
                 ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                : "hover:bg-accent hover:text-accent-foreground"}`
-              }
+                : "hover:bg-accent hover:text-accent-foreground"}`}
               onClick={() => setShowRange((prev) => !prev)}
             >
               <Code className="h-4 w-4 text-inherit" />
@@ -151,8 +145,10 @@ export function MultiLiveSearch<T>({
         </div>
       )}
 
-      {/* Input with chips */}
-      <div ref={inputRef} className="flex flex-wrap items-center gap-1.5 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base h-9 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] outline-none">
+      <div
+        ref={inputRef}
+        className="flex flex-wrap items-center gap-1.5 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base h-9 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] outline-none"
+      >
         {values.map((val) => (
           <Badge key={val} variant="outline" className="gap-1">
             {val}
@@ -174,14 +170,13 @@ export function MultiLiveSearch<T>({
         />
       </div>
 
-      {/* Dropdown */}
       {open && (
-        <div className="w-full max-h-60 rounded-md border bg-popover shadow-md">
+        <div className="absolute z-50 left-0 top-full mt-1 w-full max-h-60 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in zoom-in-95">
           <ScrollArea className="h-full">
             {isLoading ? (
-              <div className="p-2 text-sm text-center">Loading...</div>
+              <div className="p-2 text-sm text-muted-foreground text-center">Loading...</div>
             ) : data.length === 0 ? (
-              <div className="p-2 text-sm text-center">No results</div>
+              <div className="p-2 text-sm text-muted-foreground text-center">No results</div>
             ) : (
               data.map((item, i) => {
                 const value = getValue(item)
@@ -199,16 +194,14 @@ export function MultiLiveSearch<T>({
                         renderItem(item)
                       ) : (
                         <div className="flex flex-col">
-                          <p className="font-medium">
-                            {getLabel ? getLabel(item) : value}
-                          </p>
-                          <p className="text-xs text-muted-foreground">{value}</p>
+                          <p className="font-medium">{getLabel ? getLabel(item) : value}</p>
+                          {getLabel && getLabel(item) !== value && (
+                            <p className="text-xs text-muted-foreground">{value}</p>
+                          )}
                         </div>
                       )}
                     </div>
-                    {values.includes(value) && (
-                      <Check className="h-4 w-4 text-primary" />
-                    )}
+                    {values.includes(value) && <Check className="h-4 w-4 text-primary" />}
                   </div>
                 )
               })
@@ -217,7 +210,6 @@ export function MultiLiveSearch<T>({
         </div>
       )}
 
-      {/* Range input */}
       {rangeEnabled && showRange && (
         <>
           <div className="flex gap-2">

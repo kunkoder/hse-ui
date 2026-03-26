@@ -2,14 +2,11 @@
 
 import * as React from "react"
 import { useState, useRef, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { X } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 type MultiSelectProps<T> = {
-  label?: string
   placeholder?: string
   options: T[]
   getValue: (item: T) => string
@@ -17,7 +14,6 @@ type MultiSelectProps<T> = {
 }
 
 export function MultiSelect<T>({
-  label,
   placeholder = "Select...",
   options,
   getValue,
@@ -26,14 +22,12 @@ export function MultiSelect<T>({
   const [open, setOpen] = useState(false)
   const [selectedValues, setSelectedValues] = useState<string[]>([])
   const ref = useRef<HTMLDivElement>(null)
-
-  // Remove a selected value
+  
   const handleRemove = (val: string) => {
     const updated = selectedValues.filter((v) => v !== val)
     setSelectedValues(updated)
   }
-
-  // Add a value from dropdown
+  
   const handleSelect = (item: T) => {
     const value = getValue(item)
     if (!selectedValues.includes(value)) {
@@ -42,8 +36,7 @@ export function MultiSelect<T>({
     }
     setOpen(false)
   }
-
-  // Close dropdown when clicking outside
+  
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -55,10 +48,7 @@ export function MultiSelect<T>({
   }, [])
 
   return (
-    <div className="relative space-y-2" ref={ref}>
-      {label && <Label>{label}</Label>}
-
-      {/* Input with chips */}
+    <div className="relative" ref={ref}>
       <div
         className="flex flex-wrap items-center gap-1.5 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-all focus-within:ring-2 focus-within:ring-ring cursor-pointer"
         onClick={() => setOpen((prev) => !prev)}
@@ -83,8 +73,7 @@ export function MultiSelect<T>({
             })
           : <span className="text-muted-foreground">{placeholder}</span>}
       </div>
-
-      {/* Dropdown */}
+      
       {open && (
         <div className="absolute z-50 w-full mt-1 max-h-60 overflow-auto rounded-md border bg-popover text-popover-foreground shadow-md">
           <ScrollArea className="h-full">

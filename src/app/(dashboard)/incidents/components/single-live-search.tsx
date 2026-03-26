@@ -3,14 +3,11 @@
 import * as React from "react"
 import { useState, useRef, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input" // 🔹 Use shadcn Input
+import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { useDebounce } from "@/hooks/use-debounce"
 
-// 🔹 Generic Types
 type LiveSearchProps<T> = {
-  label?: string
   placeholder?: string
   icon?: (props: any) => React.JSX.Element
   queryHook: (
@@ -25,7 +22,6 @@ type LiveSearchProps<T> = {
 }
 
 export function SingleLiveSearch<T>({
-  label,
   placeholder = "Search...",
   icon: Icon,
   queryHook,
@@ -50,7 +46,6 @@ export function SingleLiveSearch<T>({
     setOpen(false)
   }
 
-  // 🔹 Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -66,18 +61,15 @@ export function SingleLiveSearch<T>({
 
   return (
     <div className="space-y-2 relative" ref={ref}>
-      {label && <Label>{label}</Label>}
-
       <div className="relative">
         <Input
           placeholder={placeholder}
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
-          className="pr-8" // space for clear button
+          className="pr-8"
         />
 
-        {/* Clear Button */}
         {query && (
           <div className="absolute right-2 top-2">
             <button onClick={() => setQuery("")} className="hover:text-destructive">
@@ -86,7 +78,6 @@ export function SingleLiveSearch<T>({
           </div>
         )}
 
-        {/* Dropdown */}
         {open && (
           <div className="absolute z-50 w-full mt-1 max-h-60 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in zoom-in-95">
             <ScrollArea className="h-full">

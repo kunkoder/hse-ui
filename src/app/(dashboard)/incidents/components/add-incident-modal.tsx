@@ -191,14 +191,8 @@ export function AddIncidentModal() {
                 queryHook={useSearchAreasQuery}
                 buildQuery={(search) => search}
                 getValue={(a) => a.code}
-                getLabel={(a) => `${a.code} - ${a.name}`}
+                getLabel={(a) => a.name}
                 onSelect={(value) => console.log("Selected Area:", value)}
-                renderItem={(a) => (
-                  <div className="flex flex-col">
-                    <span>{a.name}</span>
-                    <span className="text-xs">{a.code}</span>
-                  </div>
-                )}
               />
             </div>
 
@@ -287,23 +281,25 @@ export function AddIncidentModal() {
           </div>
 
           <MultiLiveSearch<any>
-            label="Involved Person"
+            showLabel={true}
+            label="Involved People"
             placeholder="Search person..."
             rangeEnabled={false}
             queryHook={useSearchUsersQuery}
             buildQuery={(search) => ({ search })}
             getValue={(u) => u.empId}
-            getLabel={(u) => `${u.empId} - ${u.name}`}
+            getLabel={(u) => u.name}
           />
 
           <MultiLiveSearch<any>
+            showLabel={true}
             label="Witnesses"
             placeholder="Search person..."
             rangeEnabled={false}
             queryHook={useSearchUsersQuery}
             buildQuery={(search) => ({ search })}
             getValue={(u) => u.empId}
-            getLabel={(u) => `${u.empId} - ${u.name}`}
+            getLabel={(u) => u.name}
           />
 
           <div className="grid gap-2">

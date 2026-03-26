@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select"
 import { DataTableViewOptions } from "./data-table-view-options"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
-import { FilterTask } from "./filter-task"
+import { SearchSheet } from "./search-sheet"
 
 import {
   categories,
@@ -34,8 +34,6 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const dispatch = useDispatch()
-
-  const isFiltered = table.getState().columnFilters.length > 0
 
   const selectedRows = table.getSelectedRowModel().rows
 
@@ -80,15 +78,6 @@ export function DataTableToolbar<TData>({
     table.resetRowSelection()
   }
 
-  const handleFilterChange = (key: string, value: string) => {
-    const column = table.getColumn(key)
-    column?.setFilterValue(value === "all" ? undefined : value)
-  }
-
-  const statusFilter = table.getColumn("status")?.getFilterValue() as string | undefined
-  const categoryFilter = table.getColumn("category")?.getFilterValue() as string | undefined
-  const severityFilter = table.getColumn("severity")?.getFilterValue() as string | undefined
-
   const globalFilter = table.getState().globalFilter as string
 
   return (
@@ -98,7 +87,7 @@ export function DataTableToolbar<TData>({
       <div className="space-y-2 md:flex md:items-center md:justify-between md:space-y-0">
         <div className="flex flex-1 items-center space-x-2">
           <Input
-            placeholder="Search Incident"
+            placeholder="Quick Filter"
             value={globalFilter ?? ""}
             onChange={(e) => table.setGlobalFilter(e.target.value)}
             className="w-[200px] lg:w-[300px]"
@@ -126,8 +115,20 @@ export function DataTableToolbar<TData>({
           )}
           <Button
             variant="outline"
-            onClick={() => table.setGlobalFilter("")}
-            disabled={!globalFilter}
+            onClick={() => {
+              
+              table.setGlobalFilter("");
+              
+              table.getColumn("severity")?.setFilterValue(undefined);
+              table.getColumn("status")?.setFilterValue(undefined);
+              table.getColumn("category")?.setFilterValue(undefined);
+            }}
+            disabled={
+              !globalFilter &&
+              !table.getColumn("severity")?.getFilterValue() &&
+              !table.getColumn("status")?.getFilterValue() &&
+              !table.getColumn("category")?.getFilterValue()
+            }
             className="px-3 mr-2 lg:mr-0"
           >
             <RefreshCcw className="h-4 w-4" />
@@ -138,7 +139,7 @@ export function DataTableToolbar<TData>({
 
         <div className="flex flex-col gap-2 mt-2 md:flex-row md:mt-0 md:gap-2">
           <DataTableViewOptions table={table} />
-          <FilterTask />
+          <SearchSheet />
         </div>
       </div>
 

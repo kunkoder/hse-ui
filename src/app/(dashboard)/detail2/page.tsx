@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CalendarDays, Download, Eye, FileText, MoreHorizontal } from "lucide-react";
+import { CalendarDays, Download, Eye, FileText, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 
 export default function TaskDetailPage() {
   return (
@@ -11,19 +11,66 @@ export default function TaskDetailPage() {
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
+          {/* Left side: title + badges */}
           <div className="space-y-1">
-            <h1 className="text-foreground text-2xl font-semibold">Workplace Safety Guide 2024</h1>
+            <h1 className="text-foreground text-2xl font-semibold">INC-1001</h1>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="border-red-200 bg-red-50 text-red-700">
-                To-Do
-              </Badge>
+              <p className="text-sm text-muted-foreground">
+                Reported on 3/26/2026, 11:16:51 AM
+              </p>
             </div>
           </div>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </div>
 
+          {/* Right side: Edit / Delete buttons */}
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Edit className="h-4 w-4" />
+              Edit
+            </Button>
+            <Button variant="destructive" size="sm" className="flex items-center gap-1">
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </Button>
+          </div>
+
+        </div>
+        <Badge variant="secondary" className="border-red-200 bg-red-50 text-red-700">
+          Unsafe Condition
+        </Badge>
+        <Badge variant="secondary" className="border-yellow-200 bg-yellow-50 text-yellow-700">
+          Low Severity
+        </Badge>
+        <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-blue-700">
+          Reported
+        </Badge>
+
+
+        <h3 className="text-muted-foreground text-sm font-medium">Reporter: Ravi Sharma (EMP-1001)</h3>
+        <div className="space-y-3">
+          <h3 className="text-muted-foreground text-sm font-medium">Involved People:</h3>
+          <div className="flex items-center gap-3">
+            <div className="bg-card rounded-lg border px-3 py-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-sm font-medium">James Kokoklomel</p>
+                    <p className="text-muted-foreground text-xs">EMP-1002</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-card rounded-lg border px-3 py-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-sm font-medium">Vinay Kumar</p>
+                    <p className="text-muted-foreground text-xs">EMP-1003</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         {/* Task Details Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Left Column */}
@@ -159,7 +206,7 @@ export default function TaskDetailPage() {
             </div>
           </Card>
         </div>
-        
+
 
         {/* Phase 1 */}
         <div className="space-y-4">
