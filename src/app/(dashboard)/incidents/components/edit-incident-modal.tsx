@@ -45,7 +45,7 @@ interface EditTaskModalProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function EditTaskModal({ task, open, onOpenChange }: EditTaskModalProps) {
+export function EditIncidentModal({ task, open, onOpenChange }: EditTaskModalProps) {
   const dispatch = useDispatch<AppDispatch>()
   const { loading } = useSelector((state: RootState) => state.tasks)
 

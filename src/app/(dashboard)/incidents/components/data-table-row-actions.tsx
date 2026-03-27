@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { EditTaskModal } from "./edit-task-modal"
+import { EditIncidentModal } from "./edit-incident-modal"
 import { DeleteTaskModal } from "./delete-task-modal"
 import type { Row } from "@tanstack/react-table"
 import type { Task } from "../data/schema"
@@ -59,7 +59,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       </DropdownMenu>
 
       {/* Modals rendered outside dropdown */}
-      <EditTaskModal task={task} open={editOpen} onOpenChange={setEditOpen} />
+      <EditIncidentModal task={task} open={editOpen} onOpenChange={setEditOpen} />
       <DeleteTaskModal task={task} open={deleteOpen} onOpenChange={setDeleteOpen} />
     </>
   )

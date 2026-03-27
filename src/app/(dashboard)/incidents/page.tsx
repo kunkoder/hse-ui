@@ -16,7 +16,8 @@ import {
 import { ButtonGroup } from "@/components/ui/button-group"
 
 import { Button } from "@/components/ui/button"
-import { AddIncidentModal } from "./components/add-incident-modal"
+import { AddDialog } from "./components/add-dialog"
+import { ImportDialog } from "./components/import-dialog"
 
 import {
   Card,
@@ -218,19 +219,9 @@ export default function Page() {
                 </CardDescription>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                <ButtonGroup>
-                  <Button variant="outline">
-                    <Upload />
-                    Import
-                  </Button>
-                  <Button variant="outline">
-                    <Download />
-                    Export
-                  </Button>
-                </ButtonGroup>
-
-                <AddIncidentModal />
+              <div className="flex items-center gap-2 shrink-0">
+                <ImportDialog />
+                <AddDialog />
               </div>
             </div>
           </CardHeader>

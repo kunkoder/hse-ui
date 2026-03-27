@@ -25,9 +25,9 @@ import {
 
 import { Search, User, Filter, Wrench, CheckCircle2, Eraser, SlidersHorizontal, X, CalendarIcon } from "lucide-react"
 
-import { SingleLiveSearch } from "./single-live-search"
-import { MultiLiveSearch } from "./multi-live-search"
-import { MultiSelect } from "./multi-select"
+import { SingleLiveSearch } from "@/components/custom/single-live-search"
+import { MultiLiveSearch } from "@/components/custom/multi-live-search"
+import { MultiSelect } from "@/components/custom/multi-select"
 
 import { categories, severities, statuses } from "@/types/incident"
 
@@ -73,7 +73,7 @@ export function SearchSheet() {
         <div className="grid flex-1 auto-rows-min gap-4 px-4">
 
           {/* Keyword Search */}
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <Label>Keyword</Label>
             <Input
               placeholder="Enter keyword..."
@@ -83,7 +83,7 @@ export function SearchSheet() {
           </div>
 
           {/* Date Range Picker */}
-          <Field className="w-full">
+          <Field className="w-full grid gap-2">
             <FieldLabel htmlFor="date-picker-range">Report Time</FieldLabel>
             <Popover>
               <PopoverTrigger asChild>
@@ -113,7 +113,7 @@ export function SearchSheet() {
           </Field>
 
           {/* MultiSelects */}
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <Label>Category</Label>
             <MultiSelect
               placeholder="Select category..."
@@ -123,7 +123,7 @@ export function SearchSheet() {
             />
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <Label>Severity</Label>
             <MultiSelect
               placeholder="Select severity..."
@@ -133,7 +133,7 @@ export function SearchSheet() {
             />
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <Label>Status</Label>
             <MultiSelect
               placeholder="Select status..."
@@ -143,8 +143,20 @@ export function SearchSheet() {
             />
           </div>
 
+          <div className="grid gap-2">
+            <Label>Reporter</Label>
+            <SingleLiveSearch<any>
+              placeholder="Search person..."
+              queryHook={useSearchUsersQuery}
+              buildQuery={(search) => ({ search })}
+              getValue={(item) => item.empId}
+              getLabel={(item) => item.name}
+              onSelect={(value) => console.log("Selected Person:", value)}
+            />
+          </div>
+
           {/* SingleLiveSearch for Area */}
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <Label>Area</Label>
             <SingleLiveSearch<any>
               placeholder="Search area..."
@@ -157,7 +169,6 @@ export function SearchSheet() {
           </div>
 
           {/* MultiLiveSearch for Involved People */}
-          <div className="grid gap-3">
             <MultiLiveSearch<any>
               showLabel={true}
               label="Involved People"
@@ -168,10 +179,8 @@ export function SearchSheet() {
               getValue={(item) => item.empId}
               getLabel={(item) => item.name}
             />
-          </div>
 
           {/* MultiLiveSearch for Witnesses */}
-          <div className="grid gap-3">
             <MultiLiveSearch<any>
               showLabel={true}
               label="Witnesses"
@@ -182,7 +191,6 @@ export function SearchSheet() {
               getValue={(item) => item.empId}
               getLabel={(item) => item.name}
             />
-          </div>
 
           {/* Medical Action Required */}
           <div className="flex items-center gap-2">

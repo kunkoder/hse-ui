@@ -12,9 +12,7 @@ import { toast } from "sonner";
 const PAGE_SIZE = 10;
 const MAX_INCIDENTS = 200;
 
-type UpdateIncidentPayload = Pick<Incident, "id"> & Partial<
-	Pick<Incident, "status" | "category" | "severity">
->
+type UpdateIncidentPayload = Partial<Incident> & { id: string }
 
 let simulatedDB: Incident[] = z
 	.array(incidentSchema)

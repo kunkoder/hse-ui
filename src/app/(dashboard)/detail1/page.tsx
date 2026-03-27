@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CalendarDays, Download, Eye, FileText, MoreHorizontal } from "lucide-react";
+import { CalendarDays, Download, Eye, FileText, MoreHorizontal, Trash2, AlertTriangle } from "lucide-react";
 
 import * as React from "react";
 import { useState } from "react";
@@ -25,7 +25,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { EditComplaintCard } from "./edit-complaint-card";
+import { EditSheet } from "./edit-sheet";
 
 // Dummy data
 const complaint = {
@@ -105,496 +105,317 @@ export default function Page() {
   };
 
   return (
-    <div className="space-y-6 px-4 lg:px-6">
-      <div>
-        <h1 className="text-3xl font-bold">Account Settings</h1>
+    <>
+      <div className="flex flex-col gap-2 px-4 md:px-6">
+        <h1 className="text-2xl font-bold tracking-tight">Incidents</h1>
         <p className="text-muted-foreground">
-          Manage your account settings and preferences.
+          A powerful incident reporting and tracking system.
         </p>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex justify-between items-center">
-            {complaint.subject}
-            <span
-              className={`px-2 py-0.5 text-xs rounded ${priorityColors[complaint.priority] ||
-                "bg-muted text-muted-foreground"
-                }`}
-            >
-              {complaint.priority}
-            </span>
-          </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">
-            Reported on{" "}
-            {new Date(complaint.reportDate).toLocaleString()} | Closed on{" "}
-            {new Date(complaint.closeDate).toLocaleString()}
-          </CardDescription>
-        </CardHeader>
+      <div className="flex flex-1 flex-col space-y-6 px-4 md:px-6">
+        <Card>
+          <CardContent className="space-y-6 px-4 md:px-6 lg:px-8">
+            <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto space-y-6">
+              <div className="flex justify-between items-center mb-1">
+                {/* Left: Incident ID and status badges */}
+                <h1 className="text-foreground text-2xl font-semibold">INC-1001</h1>
 
-        <CardContent className="space-y-6">
-          {/* Equipment */}
-          {(complaint.equipmentCodes?.length ||
-            complaint.equipmentRange) && (
-              <div>
-                <h4 className="text-sm font-medium mb-1">Equipment</h4>
-                <div className="flex flex-wrap gap-2">
-                  {complaint.equipmentCodes?.map((code) => {
-                    const eq = complaint.equipments.find((e) => e.code === code);
-                    return (
-                      <Badge
-                        key={code}
-                        variant="outline"
-                        className="gap-1 bg-blue-50 text-blue-700 border-blue-200 text-xs"
-                      >
-                        {eq ? `${eq.name} (${eq.code})` : code}
-                      </Badge>
-                    );
-                  })}
-                  {complaint.equipmentRange && (
-                    <Badge
-                      variant="outline"
-                      className="gap-1 bg-blue-50 text-blue-700 border-blue-200 text-xs"
-                    >
-                      {complaint.equipmentRange}
-                    </Badge>
-                  )}
+
+                <div className="flex items-center text-sm font-medium text-red-600">
+                  <AlertTriangle className="h-4 w-4 mr-1" />
+                  Medical attention required
                 </div>
               </div>
-            )}
+              <p className="text-sm text-muted-foreground">
+                Created on 3/26/2026, 11:16:51 AM
+              </p>
 
-          {/* Area & Category */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
-            {complaint.areaCode && (
-              <div>
-                <span className="font-medium">Area:</span>{" "}
-                {complaint.areaCode}
-              </div>
-            )}
-            {complaint.category && (
-              <div>
-                <span className="font-medium">Category:</span>{" "}
-                {complaint.category}
-              </div>
-            )}
-          </div>
-
-          {/* Reporter & Assignee */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
-            <div>
-              <span className="font-medium">Reporter:</span>{" "}
-              {complaint.reporterName}
-            </div>
-            {complaint.assigneeName && (
-              <div>
-                <span className="font-medium">Assignee:</span>{" "}
-                {complaint.assigneeName}
-              </div>
-            )}
-          </div>
-
-          {/* ✅ Technicians (moved here) */}
-          <div>
-            <h4 className="text-sm font-medium mb-2">Technicians</h4>
-            <div className="flex flex-wrap gap-2">
-              {complaint.technicians.map((t) => (
+              <div className="flex flex-wrap gap-2">
                 <Badge
-                  key={t.empId}
-                  variant="outline"
-                  className="gap-1 bg-purple-50 text-purple-700 border-purple-200 text-xs"
+                  variant="secondary"
+                  className="border-red-200 bg-red-50 text-red-700"
                 >
-                  {t.name} ({t.empId})
+                  Unsafe Condition
                 </Badge>
-              ))}
-            </div>
-          </div>
+                <Badge
+                  variant="secondary"
+                  className="border-yellow-200 bg-yellow-50 text-yellow-700"
+                >
+                  Low Severity
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="border-blue-200 bg-blue-50 text-blue-700"
+                >
+                  Reported
+                </Badge>
 
-          {/* Description */}
-          <div className="text-sm text-muted-foreground">
-            <h4 className="font-medium mb-1">Description</h4>
-            <p className="whitespace-pre-line">
-              {complaint.description}
-            </p>
-          </div>
+              </div>
+              <Separator />
 
-          {/* Images */}
-          {["Before", "After"].map((type) => {
-            const images =
-              type === "Before"
-                ? complaint.imagesBefore
-                : complaint.imagesAfter;
-            return (
-              <div key={type}>
-                <h4 className="text-sm font-medium mb-2">
-                  Images {type}
-                </h4>
-                <Carousel className="w-full h-60 relative">
-                  <CarouselContent>
-                    {images.map((src, idx) => (
-                      <CarouselItem key={idx}>
-                        <div className="relative w-full h-60">
-                          <Image
-                            src={src}
-                            alt={`${type} ${idx}`}
-                            fill
-                            className="object-cover rounded-md cursor-pointer"
-                            onClick={() =>
-                              setSelectedImage(src)
-                            }
-                          />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-muted-foreground">
+
+                {/* Left Column */}
+                <div className="space-y-3">
+                  {/* Area */}
+                  <div>
+                    <span className="font-medium">Area:</span>{" "}
+                    Production Area (AREA-01)
+                  </div>
+
+                  {/* Reporter */}
+                  <div>
+                    <span className="font-medium">Reported By:</span>{" "}
+                    John Doe (EMP-001)
+                  </div>
+
+                  {/* Report Time */}
+                  <div>
+                    <span className="font-medium">Report Time:</span>{" "}
+                    3/20/2026, 10:30:00
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-3">
+                  {/* Involved People */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Involved People</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge
+                        variant="outline"
+                        className="gap-1 bg-purple-50 text-purple-700 border-purple-200 text-xs"
+                      >
+                        Ahmad Ali (EMP-010)
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="gap-1 bg-purple-50 text-purple-700 border-purple-200 text-xs"
+                      >
+                        Ali Khan (EMP-011)
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="gap-1 bg-purple-50 text-purple-700 border-purple-200 text-xs"
+                      >
+                        Fatima Noor (EMP-012)
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Witnesses */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Witnesses</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge
+                        variant="outline"
+                        className="gap-1 bg-yellow-50 text-yellow-700 border-yellow-200 text-xs"
+                      >
+                        Sarah Khan (EMP-020)
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="gap-1 bg-yellow-50 text-yellow-700 border-yellow-200 text-xs"
+                      >
+                        Ali Rehman (EMP-021)
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="gap-1 bg-yellow-50 text-yellow-700 border-yellow-200 text-xs"
+                      >
+                        Nadia Ahmed (EMP-022)
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-muted-foreground text-sm font-medium">Description</h3>
+                <div className="bg-card rounded-lg border px-3 py-2">
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <p className="text-foreground text-sm leading-relaxed">
+                      Create a comprehensive safety guide for the workplace, focusing on updated safety
+                      protocols, regulations, and best practices for 2024. The guide should cover
+                      essential topics such as emergency procedures, hazard identification, employee
+                      training, and equipment safety. Ensure the content is clear, practical, and
+                      accessible to all employees. Include visual aids, checklists, and real-life examples
+                      to enhance understanding and compliance.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Before Images */}
+              {complaint.imagesBefore?.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-muted-foreground text-sm font-medium">Images</h3>
+                  <Carousel className="w-full h-60 relative">
+                    <CarouselContent>
+                      {complaint.imagesBefore.map((src, idx) => (
+                        <CarouselItem
+                          key={idx}
+                          className="basis-full sm:basis-1/2 lg:basis-1/3"
+                        >
+                          <div className="relative w-full h-60">
+                            <Image
+                              src={src}
+                              alt={`Before ${idx}`}
+                              fill
+                              className="object-cover rounded-md cursor-pointer"
+                              onClick={() => setSelectedImage(src)}
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+
+                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 shadow-md" />
+                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 shadow-md" />
+                  </Carousel>
+                </div>
+              )}
+
+              <div className="space-y-3">
+                <h3 className="text-muted-foreground text-sm font-medium">Attachments</h3>
+              </div>
+              <div>
+                <div className="grid grid-cols-1 gap-3">
+                  {/* Attachment 1 */}
+                  <div className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-red-100 p-2">
+                          <FileText className="h-4 w-4 text-red-600" />
                         </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-
-                  <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 shadow-md" />
-                  <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 shadow-md" />
-                </Carousel>
-              </div>
-            );
-          })}
-
-          {/* Reports Table */}
-          <div>
-            <h4 className="text-sm font-medium mb-2">
-              Related Reports
-            </h4>
-            <div className="border rounded-md overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-muted">
-                  <tr>
-                    <th className="text-left p-2 w-[120px]">Code</th>
-                    <th className="text-left p-2">Title</th>
-                    <th className="text-left p-2 w-[180px]">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {complaint.relatedReports.map((r) => (
-                    <tr key={r.code} className="border-t hover:bg-muted/50">
-                      <td className="p-2">{r.code}</td>
-                      <td className="p-2">{r.title}</td>
-                      <td className="p-2 text-muted-foreground">
-                        {new Date(r.datetime).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Tasks Table */}
-          <div>
-            <h4 className="text-sm font-medium mb-2">
-              Related Tasks
-            </h4>
-            <div className="border rounded-md overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-muted">
-                  <tr>
-                    <th className="text-left p-2 w-[120px]">Code</th>
-                    <th className="text-left p-2">Title</th>
-                    <th className="text-left p-2 w-[180px]">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {complaint.relatedTasks.map((t) => (
-                    <tr key={t.code} className="border-t hover:bg-muted/50">
-                      <td className="p-2">{t.code}</td>
-                      <td className="p-2">{t.title}</td>
-                      <td className="p-2 text-muted-foreground">
-                        {new Date(t.datetime).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Parts Table */}
-          <div>
-            <h4 className="text-sm font-medium mb-2">Parts Used</h4>
-            <div className="border rounded-md overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-muted">
-                  <tr>
-                    <th className="text-left p-2 w-[120px]">Code</th>
-                    <th className="text-left p-2">Name</th>
-                    <th className="text-left p-2 w-[80px]">Qty</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {complaint.relatedParts.map((p) => (
-                    <tr key={p.code} className="border-t hover:bg-muted/50">
-                      <td className="p-2">{p.code}</td>
-                      <td className="p-2">{p.name}</td>
-                      <td className="p-2">{p.quantity}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Task Details Grid */}
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Left Column */}
-            <div className="space-y-6">
-              {/* Assignees */}
-              <div className="space-y-3">
-                <h3 className="text-muted-foreground text-sm font-medium">Assignee:</h3>
-                <div className="flex items-center gap-3">
-                  <div className="bg-card flex items-center gap-2 rounded-lg border px-3 py-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src="/professional-man.jpg" />
-                      <AvatarFallback>RS</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium">Raden Sam Pitak</span>
+                        <div>
+                          <p className="text-sm font-medium">1248371294812.pdf</p>
+                          <p className="text-muted-foreground text-xs">20 MB</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-card flex items-center gap-2 rounded-lg border px-3 py-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src="/professional-man-glasses.png" />
-                      <AvatarFallback>JK</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium">James Kokoklomel</span>
+                  {/* Attachment 2 */}
+                  <div className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-red-100 p-2">
+                          <FileText className="h-4 w-4 text-red-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">1248371294812.pdf</p>
+                          <p className="text-muted-foreground text-xs">20 MB</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Attachment 3 */}
+                  <div className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-red-100 p-2">
+                          <FileText className="h-4 w-4 text-red-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">1248371294812.pdf</p>
+                          <p className="text-muted-foreground text-xs">20 MB</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Date */}
               <div className="space-y-3">
-                <h3 className="text-muted-foreground text-sm font-medium">Date</h3>
-                <div className="bg-card flex w-fit items-center gap-2 rounded-lg border px-3 py-2">
-                  <CalendarDays className="text-muted-foreground h-4 w-4" />
-                  <span className="text-sm">May 18, 2024 - May 26, 2024</span>
-                </div>
-              </div>
-
-              {/* Priority */}
-              <div className="space-y-3">
-                <h3 className="text-muted-foreground text-sm font-medium">Priority</h3>
-                <Badge variant="secondary" className="w-fit border-blue-200 bg-blue-50 text-blue-700">
-                  Low
-                </Badge>
-              </div>
-            </div>
-
-            {/* Right Column - Attachments */}
-            <div className="space-y-3">
-              <h3 className="text-muted-foreground text-sm font-medium">Attachment</h3>
-              <div className="grid gap-3">
-                {/* Attachment 1 */}
+                <h3 className="text-muted-foreground text-sm font-medium">Immediate Action</h3>
                 <div className="bg-card rounded-lg border px-3 py-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-red-100 p-2">
-                        <FileText className="h-4 w-4 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">1248371294812.pdf</p>
-                        <p className="text-muted-foreground text-xs">20 MB</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Attachment 2 */}
-                <div className="bg-card rounded-lg border px-3 py-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-red-100 p-2">
-                        <FileText className="h-4 w-4 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">guideline fix_2024.pdf</p>
-                        <p className="text-muted-foreground text-xs">101 MB</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Attachment 3 */}
-                <div className="bg-card rounded-lg border px-3 py-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-red-100 p-2">
-                        <FileText className="h-4 w-4 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">21412981364.pdf</p>
-                        <p className="text-muted-foreground text-xs">82 MB</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-3">
-            <h3 className="text-muted-foreground text-sm font-medium">Description</h3>
-            <div className="bg-card rounded-lg border px-3 py-2">
-              <div className="border-l-4 border-blue-500 pl-4">
-                <p className="text-foreground text-sm leading-relaxed">
-                  Create a comprehensive safety guide for the workplace, focusing on updated safety
-                  protocols, regulations, and best practices for 2024. The guide should cover
-                  essential topics such as emergency procedures, hazard identification, employee
-                  training, and equipment safety. Ensure the content is clear, practical, and
-                  accessible to all employees. Include visual aids, checklists, and real-life examples
-                  to enhance understanding and compliance.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Phase 1 */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🚀</span>
-              <h2 className="text-lg font-semibold">Phase 1</h2>
-            </div>
-
-            <Card className="p-4">
-              <div className="border-l-4 border-blue-500 pl-4">
-                <p className="text-muted-foreground text-sm">
-                  The guide should be aligned with current industry standards and legal requirements,
-                  promoting a safe and healthy work environment for everyone.
-                </p>
-              </div>
-            </Card>
-
-            {/* Task Progress */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-600">✅</span>
-                  <h3 className="font-medium">Task - Phase 1</h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-sm">3/4</span>
-                  <div className="flex gap-1">
-                    <div className="h-2 w-8 rounded-full bg-green-500"></div>
-                    <div className="h-2 w-8 rounded-full bg-green-500"></div>
-                    <div className="h-2 w-8 rounded-full bg-green-500"></div>
-                    <div className="bg-muted h-2 w-8 rounded-full"></div>
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <p className="text-foreground text-sm leading-relaxed">
+                      Create a comprehensive safety guide for the workplace, focusing on updated safety
+                      protocols, regulations, and best practices for 2024. The guide should cover
+                      essential topics such as emergency procedures, hazard identification, employee
+                      training, and equipment safety. Ensure the content is clear, practical, and
+                      accessible to all employees. Include visual aids, checklists, and real-life examples
+                      to enhance understanding and compliance.
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Task List */}
               <div className="space-y-3">
-                {/* Completed Tasks */}
-                <div className="bg-card flex items-center gap-3 rounded-lg border p-3">
-                  <Checkbox checked disabled />
-                  <span className="text-muted-foreground text-sm line-through">
-                    Update Safety Protocols
-                  </span>
-                  <div className="ml-auto">
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="bg-card flex items-center gap-3 rounded-lg border p-3">
-                  <Checkbox checked disabled />
-                  <span className="text-muted-foreground text-sm line-through">
-                    Develop Clear Emergency Procedures
-                  </span>
-                  <div className="ml-auto">
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="bg-card flex items-center gap-3 rounded-lg border p-3">
-                  <Checkbox checked disabled />
-                  <span className="text-muted-foreground text-sm line-through">
-                    Create Employee Training Modules
-                  </span>
-                  <div className="ml-auto">
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Pending Task */}
-                <div className="bg-card flex items-center gap-3 rounded-lg border p-3">
-                  <Checkbox />
-                  <span className="text-sm font-medium">Include Visuals and Checklists</span>
-                  <div className="ml-auto">
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                <h3 className="text-muted-foreground text-sm font-medium">Corrective Action</h3>
+                <div className="bg-card rounded-lg border px-3 py-2">
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <p className="text-foreground text-sm leading-relaxed">
+                      Create a comprehensive safety guide for the workplace, focusing on updated safety
+                      protocols, regulations, and best practices for 2024. The guide should cover
+                      essential topics such as emergency procedures, hazard identification, employee
+                      training, and equipment safety. Ensure the content is clear, practical, and
+                      accessible to all employees. Include visual aids, checklists, and real-life examples
+                      to enhance understanding and compliance.
+                    </p>
                   </div>
                 </div>
               </div>
+
+
+              <Separator className="my-4" />
+
+              <div className="flex justify-between items-center text-sm text-muted-foreground">
+                {/* Left: Last updated info */}
+                <div>
+                  Last updated by Supervisor A (EMP-005) on 3/21/2026, 09:00:00
+                </div>
+
+                {/* Right: Actions */}
+                <div className="flex gap-2">
+                  <EditSheet />
+                  <Button variant="destructive" className="cursor-pointer">
+                    <Trash2 className="h-4 w-4" />
+                    <span>Delete</span>
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <Separator />
-
-          {/* Actions */}
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" size="sm">
-              Edit
-            </Button>
-            <Button variant="destructive" size="sm">
-              Delete
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Image Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
-          onClick={() => setSelectedImage(null)}
-        >
+        {/* Image Modal */}
+        {selectedImage && (
           <div
-            className="relative max-w-5xl w-full h-[80vh]"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
+            onClick={() => setSelectedImage(null)}
           >
-            <Image
-              src={selectedImage}
-              alt="Zoomed"
-              fill
-              className="object-contain rounded-md"
-            />
+            <div
+              className="relative max-w-5xl w-full h-[80vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={selectedImage}
+                alt="Zoomed"
+                fill
+                className="object-contain rounded-md"
+              />
+            </div>
           </div>
-        </div>
-      )}
-
-      <EditComplaintCard complaint={complaint} />
-    </div>
+        )}
+      </div>
+    </>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import type { Table } from "@tanstack/react-table"
 import { useState, useMemo } from "react"
-import { RefreshCcw } from "lucide-react"
+import { RefreshCcw, Download, FileText, FileSpreadsheet } from "lucide-react"
 import { useDispatch } from "react-redux"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+
 import { DataTableViewOptions } from "./data-table-view-options"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { SearchSheet } from "./search-sheet"
@@ -79,6 +87,9 @@ export function DataTableToolbar<TData>({
   }
 
   const globalFilter = table.getState().globalFilter as string
+  const handleExport = (type: "pdf" | "excel") => {
+    console.log("Export:", type)
+  }
 
   return (
     <div className="space-y-4">
@@ -116,9 +127,9 @@ export function DataTableToolbar<TData>({
           <Button
             variant="outline"
             onClick={() => {
-              
+
               table.setGlobalFilter("");
-              
+
               table.getColumn("severity")?.setFilterValue(undefined);
               table.getColumn("status")?.setFilterValue(undefined);
               table.getColumn("category")?.setFilterValue(undefined);
@@ -209,6 +220,32 @@ export function DataTableToolbar<TData>({
           >
             Apply
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="cursor-pointer">
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-36">
+              <DropdownMenuItem
+                onClick={() => handleExport("pdf")}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <FileText className="h-4 w-4" />
+                PDF
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleExport("excel")}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Excel
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
     </div>

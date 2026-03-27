@@ -49,23 +49,27 @@ export const statuses = [
     value: "REPORTED",
     label: "Reported",
     icon: CircleDot,
+    color: "text-blue-600 border-blue-500",
   },
   {
     value: "UNDER_INVESTIGATION",
     label: "Under Investigation",
     icon: Search,
+    color: "text-yellow-600 border-yellow-500",
   },
   {
     value: "RESOLVED",
     label: "Resolved",
     icon: CheckCheck,
+    color: "text-green-600 border-green-500",
   },
   {
     value: "CLOSED",
     label: "Closed",
     icon: BadgeCheck,
+    color: "text-gray-600 border-gray-500",
   },
-];
+]
 
 export const severities = [
   {

@@ -31,8 +31,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { categories, severities, statuses } from "@/types/incident"
 import { incidentSchema, type Incident } from "@/schemas/incident-schema"
 
-import { MultiLiveSearch } from "./multi-live-search"
-import { SingleLiveSearch } from "./single-live-search"
+import { MultiLiveSearch } from "../../../../components/custom/multi-live-search"
+import { SingleLiveSearch } from "../../../../components/custom/single-live-search"
 
 import { useSearchUsersQuery, useSearchAreasQuery } from "@/store/api-slice"
 
@@ -47,7 +47,7 @@ type FormData = {
   medicalAttentionRequired: boolean
 }
 
-export function AddIncidentModal() {
+export function AddDialog() {
   const dispatch = useDispatch<AppDispatch>()
   const { loading } = useSelector((s: RootState) => s.incidents)
 

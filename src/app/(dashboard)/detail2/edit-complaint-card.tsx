@@ -18,7 +18,7 @@ import {
 
 import { X, SlidersHorizontal } from "lucide-react";
 
-import { MultiLiveSearch } from "../incidents/components/multi-live-search";
+import { MultiLiveSearch } from "../../../components/custom/multi-live-search";
 
 import {
   useSearchWorkItemsQuery,
