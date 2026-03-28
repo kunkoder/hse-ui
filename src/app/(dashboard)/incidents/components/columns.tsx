@@ -14,7 +14,6 @@ import {
 } from "@/types/incident"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
-import { DataTableRowActions } from "./data-table-row-actions"
 
 const formatDateTime = (date?: Date) => {
   if (!date) return "-"
@@ -397,10 +396,5 @@ export const columns: ColumnDef<Incident>[] = [
         </div>
       )
     },
-  },
-
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]

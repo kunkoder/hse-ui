@@ -31,9 +31,9 @@ import {
 
 import { Search, User, Filter, Wrench, CheckCircle2, Eraser, SlidersHorizontal, X, CalendarIcon, Edit } from "lucide-react"
 
-import { SingleLiveSearch } from "../../../components/custom/single-live-search"
-import { MultiLiveSearch } from "../../../components/custom/multi-live-search"
-import { MultiSelect } from "../../../components/custom/multi-select"
+import { SingleLiveSearch } from "@/components/custom/single-live-search"
+import { MultiLiveSearch } from "@/components/custom/multi-live-search"
+import { MultiSelect } from "@/components/custom/multi-select"
 
 import { categories, severities, statuses } from "@/types/incident"
 
@@ -55,7 +55,18 @@ export function EditSheet() {
 
   const [open, setOpen] = useState(false)
 
-  const [form, setForm] = useState<FormData>({
+  interface IncidentForm {
+    category: string
+    severity: string
+    status: string
+    description: string
+    reportedAt: Date
+    immediateAction: string
+    correctiveAction: string
+    medicalAttentionRequired: boolean
+  }
+
+  const [form, setForm] = useState<IncidentForm>({
     category: "",
     severity: "",
     status: "",
@@ -172,7 +183,7 @@ export function EditSheet() {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="grid flex-1 auto-rows-min gap-4 px-4">
+        <form className="grid flex-1 auto-rows-min gap-4 px-4">
 
           {/* Keyword Search */}
           <div className="grid gap-2">
@@ -246,14 +257,14 @@ export function EditSheet() {
           </div>
 
           <div className="grid gap-2">
-                      <Label>Description *</Label>
-                      <Textarea
-                        value={form.description}
-                        onChange={(e) =>
-                          setForm((p) => ({ ...p, description: e.target.value }))
-                        }
-                      />
-                    </div>
+            <Label>Description *</Label>
+            <Textarea
+              value={form.description}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, description: e.target.value }))
+              }
+            />
+          </div>
 
           {/* SingleLiveSearch for Area */}
           <div className="grid gap-2">
@@ -269,30 +280,30 @@ export function EditSheet() {
           </div>
 
           {/* MultiLiveSearch for Involved People */}
-            <MultiLiveSearch<any>
-              showLabel={true}
-              label="Involved People"
-              placeholder="Search person..."
-              rangeEnabled={false}
-              queryHook={useSearchUsersQuery}
-              buildQuery={(search) => ({ search })}
-              getValue={(item) => item.empId}
-              getLabel={(item) => item.name}
-            />
+          <MultiLiveSearch<any>
+            showLabel={true}
+            label="Involved People"
+            placeholder="Search person..."
+            rangeEnabled={false}
+            queryHook={useSearchUsersQuery}
+            buildQuery={(search) => ({ search })}
+            getValue={(item) => item.empId}
+            getLabel={(item) => item.name}
+          />
 
           {/* MultiLiveSearch for Witnesses */}
-            <MultiLiveSearch<any>
-              showLabel={true}
-              label="Witnesses"
-              placeholder="Search person..."
-              rangeEnabled={false}
-              queryHook={useSearchUsersQuery}
-              buildQuery={(search) => ({ search })}
-              getValue={(item) => item.empId}
-              getLabel={(item) => item.name}
-            />
+          <MultiLiveSearch<any>
+            showLabel={true}
+            label="Witnesses"
+            placeholder="Search person..."
+            rangeEnabled={false}
+            queryHook={useSearchUsersQuery}
+            buildQuery={(search) => ({ search })}
+            getValue={(item) => item.empId}
+            getLabel={(item) => item.name}
+          />
 
-            <div className="grid gap-2">
+          <div className="grid gap-2">
             <Label>Immediate Action</Label>
             <Textarea
               value={form.immediateAction}
@@ -402,7 +413,7 @@ export function EditSheet() {
             </div>
           </div>
 
-        </div>
+        </form>
 
 
         <SheetFooter>

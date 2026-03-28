@@ -12,7 +12,15 @@ import {
   SheetDescription,
   SheetTrigger,
   SheetFooter,
+  SheetClose
 } from "@/components/ui/sheet"
+
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,6 +30,16 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator";
 
+import { Calendar } from "@/components/ui/calendar"
+import { Field, FieldLabel } from "@/components/ui/field"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+import { DateRange } from "react-day-picker"
+
 import {
   Select,
   SelectContent,
@@ -30,7 +48,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Edit, X, FileText, Image as ImageIcon, Trash2 } from "lucide-react"
+import { addDays, format } from "date-fns"
+
+import { Edit, X, FileText, Image as ImageIcon, Trash2, CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { z } from "zod"
@@ -39,12 +59,18 @@ import { updateIncidentApi, } from "@/store/incident-slice"
 import { categories, severities, statuses } from "@/types/incident"
 import type { Incident } from "@/schemas/incident-schema"
 
-// Import your search components
-// import { SingleLiveSearch, MultiLiveSearch } from "@/components/search"
-// import { useSearchAreasQuery, useSearchUsersQuery } from "@/store/api"
+import {
+  useSearchUsersQuery,
+  useSearchAreasQuery,
+} from "@/store/api-slice"
+
+import { MultiLiveSearch } from "@/components/custom/multi-live-search"
+import { SingleLiveSearch } from "@/components/custom/single-live-search"
+import { MultiSelect } from "@/components/custom/multi-select"
 
 const incidentFormSchema = z.object({
   id: z.string(),
+  reportedAt: z.iso.datetime(),
   category: z.string().min(1, "Category is required"),
   severity: z.string().min(1, "Severity is required"),
   status: z.string().min(1, "Status is required"),
@@ -76,6 +102,7 @@ export function EditSheet({ incident }: EditSheetProps) {
   // Form state
   const [formData, setFormData] = useState<FormData>({
     id: "",
+    reportedAt: "",
     category: "",
     severity: "",
     status: "",
@@ -102,9 +129,10 @@ export function EditSheet({ incident }: EditSheetProps) {
 
   // Populate form when sheet opens or incident changes
   useEffect(() => {
-    if (open && incident) {
+    if (incident) {
       setFormData({
         id: incident.id,
+        reportedAt: incident.reportedAt,
         category: incident.category,
         severity: incident.severity,
         status: incident.status,
@@ -121,7 +149,7 @@ export function EditSheet({ incident }: EditSheetProps) {
       setNewImages([])
       setNewDocuments([])
     }
-  }, [open, incident])
+  }, [incident])
 
   // Cleanup object URLs on unmount
   useEffect(() => {
@@ -212,254 +240,180 @@ export function EditSheet({ incident }: EditSheetProps) {
     setNewDocuments((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: new Date(new Date().getFullYear(), 0, 20),
+    to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+  })
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="cursor-pointer flex items-center gap-1">
+        <Button variant="outline" className="cursor-pointer">
           <Edit className="h-4 w-4" />
-          Edit
+          <span>Edit</span>
         </Button>
       </SheetTrigger>
-
-      <SheetContent className="overflow-y-auto w-full sm:w-[700px] md:w-[900px] lg:w-[1000px]">
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Edit Incident</SheetTitle>
+          <SheetTitle>Search Reports</SheetTitle>
           <SheetDescription>
-            Update incident details. Fields marked with * are required.
+            Use the form below to search incidents with keywords, date range, categories, and more.
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 px-4 py-4">
-          {/* Core Fields Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Category */}
-            <div className="space-y-2">
-              <Label>Category *</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(v) => setFormData((p) => ({ ...p, category: v }))}
-              >
-                <SelectTrigger className={errors.category ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.value} value={c.value}>
-                      {c.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.category && <p className="text-xs text-red-500">{errors.category}</p>}
-            </div>
+        <form className="grid flex-1 auto-rows-min gap-4 px-4">
 
-            {/* Severity */}
-            <div className="space-y-2">
-              <Label>Severity *</Label>
-              <Select
-                value={formData.severity}
-                onValueChange={(v) => setFormData((p) => ({ ...p, severity: v }))}
-              >
-                <SelectTrigger className={errors.severity ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  {severities.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.severity && <p className="text-xs text-red-500">{errors.severity}</p>}
-            </div>
-
-            {/* Status */}
-            <div className="space-y-2">
-              <Label>Status *</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(v) => setFormData((p) => ({ ...p, status: v }))}
-              >
-                <SelectTrigger className={errors.status ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statuses.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.status && <p className="text-xs text-red-500">{errors.status}</p>}
-            </div>
+          <div className="grid gap-2">
+            <Label>Report Time *</Label>
+            <Input
+              type="datetime-local"
+              value={formData.reportedAt.slice(0, 16)}
+              onChange={(e) =>
+                setFormData((p) => ({
+                  ...p,
+                  reportedAt: e.target.value,
+                }))
+              }
+            />
           </div>
 
-          {/* Description */}
-          <div className="space-y-2">
+          {/* MultiSelects */}
+          <div className="grid gap-2">
+            <Label>Category *</Label>
+            <Select
+              value={formData.category}
+              onValueChange={(v) =>
+                setFormData((p) => ({ ...p, category: v }))
+              }
+            >
+              <SelectTrigger className="w-full cursor-pointer">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Severity</Label>
+            <Select
+              value={formData.severity}
+              onValueChange={(v) =>
+                setFormData((p) => ({ ...p, severity: v }))
+              }
+            >
+              <SelectTrigger className="w-full cursor-pointer">
+                <SelectValue placeholder="Select severity" />
+              </SelectTrigger>
+              <SelectContent>
+                {severities.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Status</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(v) =>
+                setFormData((p) => ({ ...p, status: v }))
+              }
+            >
+              <SelectTrigger className="w-full cursor-pointer">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statuses.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
             <Label>Description *</Label>
             <Textarea
               value={formData.description}
-              onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
-              className={errors.description ? "border-red-500" : ""}
-              rows={4}
-            />
-            {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
-          </div>
-
-          {/* Area & Reported By */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Area Search */}
-            <div className="space-y-2">
-              <Label>Area</Label>
-              {/* Replace with your actual SingleLiveSearch component */}
-              {/* <SingleLiveSearch
-                placeholder="Search area..."
-                queryHook={useSearchAreasQuery}
-                buildQuery={(search) => search}
-                getValue={(item) => item.code}
-                getLabel={(item) => item.name}
-                initialValue={incident.area}
-                onSelect={(area) =>
-                  setFormData((p) => ({ ...p, areaCode: area?.code }))
-                }
-              /> */}
-              <Input
-                placeholder="Area search (integrate SingleLiveSearch)"
-                value={formData.areaCode || ""}
-                readOnly
-                className="bg-muted/50"
-              />
-              {formData.areaCode && (
-                <Badge variant="secondary" className="mt-1">
-                  {formData.areaCode}
-                </Badge>
-              )}
-            </div>
-
-            {/* Reported By */}
-            <div className="space-y-2">
-              <Label>Reported By</Label>
-              <Input
-                placeholder="Reporter (read-only)"
-                value={incident.reportedBy?.name || ""}
-                readOnly
-                className="bg-muted/50"
-              />
-              {incident.reportedBy && (
-                <Badge variant="secondary" className="mt-1">
-                  {incident.reportedBy.empId}
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          {/* Involved People */}
-          <div className="space-y-2">
-            <Label>Involved People</Label>
-            {/* Replace with your actual MultiLiveSearch component */}
-            {/* <MultiLiveSearch
-              placeholder="Search people..."
-              queryHook={useSearchUsersQuery}
-              buildQuery={(search) => ({ search })}
-              getValue={(item) => item.empId}
-              getLabel={(item) => item.name}
-              initialValues={incident.involvedPeople}
-              onChange={(people) =>
-                setFormData((p) => ({
-                  ...p,
-                  involvedPeopleEmpIds: people.map((p) => p.empId),
-                }))
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, description: e.target.value }))
               }
-            /> */}
-            <div className="flex flex-wrap gap-2">
-              {formData.involvedPeopleEmpIds?.map((empId) => (
-                <Badge key={empId} variant="outline" className="gap-1">
-                  {empId}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((p) => ({
-                        ...p,
-                        involvedPeopleEmpIds: p.involvedPeopleEmpIds?.filter(
-                          (id) => id !== empId
-                        ),
-                      }))
-                    }
-                    className="ml-1 hover:text-red-500"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-            <Input
-              placeholder="People search (integrate MultiLiveSearch)"
-              readOnly
-              className="bg-muted/50 mt-2"
             />
           </div>
 
-          {/* Witnesses */}
-          <div className="space-y-2">
-            <Label>Witnesses</Label>
-            {/* Replace with your actual MultiLiveSearch component */}
-            <div className="flex flex-wrap gap-2">
-              {formData.witnessesEmpIds?.map((empId) => (
-                <Badge key={empId} variant="outline" className="gap-1 bg-yellow-50">
-                  {empId}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((p) => ({
-                        ...p,
-                        witnessesEmpIds: p.witnessesEmpIds?.filter(
-                          (id) => id !== empId
-                        ),
-                      }))
-                    }
-                    className="ml-1 hover:text-red-500"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-            <Input
-              placeholder="Witness search (integrate MultiLiveSearch)"
-              readOnly
-              className="bg-muted/50 mt-2"
+          {/* SingleLiveSearch for Area */}
+          <div className="grid gap-2">
+            <Label>Area</Label>
+            <SingleLiveSearch<any>
+              placeholder="Search area..."
+              queryHook={useSearchAreasQuery}
+              buildQuery={(search) => search}
+              getValue={(item) => item.code}
+              getLabel={(item) => item.name}
+              onSelect={(value) => console.log("Selected Area:", value)}
+              initialValue={incident.area ? `${incident.area.name} (${incident.area.code})` : ""}
             />
           </div>
 
-          {/* Actions */}
-          <div className="space-y-2">
+          {/* MultiLiveSearch for Involved People */}
+          <MultiLiveSearch<any>
+            showLabel={true}
+            label="Involved People"
+            placeholder="Search person..."
+            rangeEnabled={false}
+            queryHook={useSearchUsersQuery}
+            buildQuery={(search) => ({ search })}
+            getValue={(item) => item.empId}
+            getLabel={(item) => item.name}
+            initialValues={incident.involvedPeople?.map((w) => w.empId) || []}
+          />
+
+          {/* MultiLiveSearch for Witnesses */}
+          <MultiLiveSearch<any>
+            showLabel={true}
+            label="Witnesses"
+            placeholder="Search person..."
+            rangeEnabled={false}
+            queryHook={useSearchUsersQuery}
+            buildQuery={(search) => ({ search })}
+            getValue={(item) => item.empId}
+            getLabel={(item) => item.name}
+            initialValues={incident.witnesses?.map((w) => w.empId) || []}
+          />
+
+          <div className="grid gap-2">
             <Label>Immediate Action</Label>
             <Textarea
               value={formData.immediateAction}
               onChange={(e) =>
                 setFormData((p) => ({ ...p, immediateAction: e.target.value }))
               }
-              rows={3}
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="grid gap-2">
             <Label>Corrective Action</Label>
             <Textarea
               value={formData.correctiveAction}
               onChange={(e) =>
                 setFormData((p) => ({ ...p, correctiveAction: e.target.value }))
               }
-              rows={3}
             />
           </div>
 
-          {/* Medical Attention */}
+          {/* Medical Action Required */}
           <div className="flex items-center gap-2">
             <Checkbox
-              id="medical"
               checked={formData.medicalAttentionRequired}
               onCheckedChange={(v) =>
                 setFormData((p) => ({
@@ -468,45 +422,32 @@ export function EditSheet({ incident }: EditSheetProps) {
                 }))
               }
             />
-            <Label htmlFor="medical">Medical Attention Required</Label>
+            <Label>Medical Attention Required</Label>
           </div>
 
-          <Separator />
-
-          {/* Existing Images (Read-only display) */}
-          {existingImages.length > 0 && (
-            <div className="space-y-2">
-              <Label>Existing Images</Label>
-              <div className="grid grid-cols-4 gap-3">
-                {existingImages.map((file) => (
-                  <div key={file.id} className="relative group border rounded-md overflow-hidden">
-                    {/* Use Next.js Image if available, otherwise img tag */}
+          <div className="grid gap-4">
+            {/* Existing Images */}
+            {incident.images && incident.images.length > 0 && (
+              <div className="grid grid-cols-3 gap-3 mt-2">
+                {incident.images.map((file, index) => (
+                  <div
+                    key={file.id || index}
+                    className="relative group border rounded-md overflow-hidden"
+                  >
                     <img
-                      src={file.filePath}
-                      alt={file.fileName}
-                      className="w-full h-20 object-cover"
+                      src={file.filePath} // existing image URL
+                      alt={file.fileName || "preview"}
+                      className="w-full h-24 object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                      <span className="text-white text-xs truncate px-2">{file.fileName}</span>
-                    </div>
+                    {/* Existing images are read-only, so no remove button */}
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* New Image Upload */}
-          <div className="space-y-2">
-            <Label>Add New Images</Label>
-            <Input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="cursor-pointer"
-            />
+            {/* Newly Uploaded Images */}
             {newImages.length > 0 && (
-              <div className="grid grid-cols-4 gap-3 mt-2">
+              <div className="grid grid-cols-3 gap-3 mt-2">
                 {newImages.map((file, index) => {
                   const previewUrl = URL.createObjectURL(file)
                   return (
@@ -516,8 +457,8 @@ export function EditSheet({ incident }: EditSheetProps) {
                     >
                       <img
                         src={previewUrl}
-                        alt={file.name}
-                        className="w-full h-20 object-cover"
+                        alt="preview"
+                        className="w-full h-24 object-cover"
                       />
                       <button
                         type="button"
@@ -531,50 +472,23 @@ export function EditSheet({ incident }: EditSheetProps) {
                 })}
               </div>
             )}
-          </div>
 
-          {/* Existing Attachments (Read-only display) */}
-          {existingAttachments.length > 0 && (
-            <div className="space-y-2">
-              <Label>Existing Attachments</Label>
-              <div className="flex flex-col gap-2">
-                {existingAttachments.map((file) => (
+            {/* Existing Documents */}
+            {incident.attachments && incident.attachments.length > 0 && (
+              <div className="flex flex-col gap-2 mt-2">
+                {incident.attachments.map((file) => (
                   <div
                     key={file.id}
-                    className="flex items-center justify-between border rounded-md px-3 py-2 bg-muted/30"
+                    className="flex items-center justify-between border rounded-md px-3 py-2"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-red-100 p-2">
-                        <FileText className="h-4 w-4 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{file.fileName}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(file.uploadedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="icon" asChild>
-                      <a href={file.filePath} download={file.fileName}>
-                        <FileText className="h-4 w-4" />
-                      </a>
-                    </Button>
+                    <span className="text-sm truncate">{file.fileName}</span>
+                    {/* Existing documents read-only */}
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* New Document Upload */}
-          <div className="space-y-2">
-            <Label>Add New Documents</Label>
-            <Input
-              type="file"
-              multiple
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
-              onChange={handleDocumentUpload}
-              className="cursor-pointer"
-            />
+            {/* Newly Uploaded Documents */}
             {newDocuments.length > 0 && (
               <div className="flex flex-col gap-2 mt-2">
                 {newDocuments.map((file, index) => (
@@ -582,18 +496,13 @@ export function EditSheet({ incident }: EditSheetProps) {
                     key={index}
                     className="flex items-center justify-between border rounded-md px-3 py-2"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-blue-100 p-2">
-                        <FileText className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <span className="text-sm truncate">{file.name}</span>
-                    </div>
+                    <span className="text-sm truncate">{file.name}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveNewDocument(index)}
                       className="text-red-500 hover:text-red-700"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 ))}
@@ -601,16 +510,15 @@ export function EditSheet({ incident }: EditSheetProps) {
             )}
           </div>
 
-          {/* Footer Actions */}
-          <SheetFooter className="pt-4 border-t">
-            <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save Changes"}
-            </Button>
-          </SheetFooter>
         </form>
+
+
+        <SheetFooter>
+          <Button type="submit">Search</Button>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   )

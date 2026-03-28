@@ -22,6 +22,7 @@ type MultiLiveSearchProps<T> = {
   getLabel?: (item: T) => string
   renderItem?: (item: T) => React.ReactNode
   onChange?: (values: string[]) => void
+  initialValues?: string[]
 }
 
 const expandRange = (input: string): string[] => {
@@ -64,12 +65,13 @@ export function MultiLiveSearch<T>({
   getLabel,
   renderItem,
   onChange,
+  initialValues,
 }: MultiLiveSearchProps<T>) {
   const [query, setQuery] = useState("")
   const [range, setRange] = useState("")
   const [showRange, setShowRange] = useState(false)
   const [open, setOpen] = useState(false)
-  const [values, setValues] = useState<string[]>([])
+  const [values, setValues] = useState<string[]>(initialValues ?? [])
   const [error, setError] = useState("")
 
   const ref = useRef<HTMLDivElement>(null)
@@ -87,6 +89,12 @@ export function MultiLiveSearch<T>({
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
+
+  useEffect(() => {
+    if (initialValues) {
+      setValues(initialValues)
+    }
+  }, [initialValues])
 
   const handleSelect = (item: T) => {
     const value = getValue(item)
@@ -147,7 +155,7 @@ export function MultiLiveSearch<T>({
 
       <div
         ref={inputRef}
-        className="flex flex-wrap items-center gap-1.5 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base h-9 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] outline-none"
+        className="flex flex-wrap items-center gap-1.5 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base min-h-9 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] outline-none"
       >
         {values.map((val) => (
           <Badge key={val} variant="outline" className="gap-1">

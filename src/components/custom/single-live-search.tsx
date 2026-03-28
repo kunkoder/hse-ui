@@ -19,6 +19,7 @@ type LiveSearchProps<T> = {
   getLabel?: (item: T) => string
   renderItem?: (item: T) => React.ReactNode
   onSelect: (value: string, item: T) => void
+  initialValue?: string
 }
 
 export function SingleLiveSearch<T>({
@@ -30,8 +31,9 @@ export function SingleLiveSearch<T>({
   getLabel,
   renderItem,
   onSelect,
+  initialValue = "",
 }: LiveSearchProps<T>) {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(initialValue)
   const [open, setOpen] = useState(false)
   const [debounced] = useDebounce(query, 500)
   const ref = useRef<HTMLDivElement>(null)
@@ -39,10 +41,14 @@ export function SingleLiveSearch<T>({
   const { data = [], isLoading } = queryHook(buildQuery(debounced), { skip: !debounced })
   const options = data
 
+  // 🔹 When an item is selected, show "name (code)" in the input
   const handleSelect = (item: T) => {
     const value = getValue(item)
     onSelect(value, item)
-    setQuery(getLabel ? getLabel(item) : value)
+
+    // Display label + value in input
+    const displayLabel = getLabel ? `${getLabel(item)} (${value})` : value
+    setQuery(displayLabel)
     setOpen(false)
   }
 

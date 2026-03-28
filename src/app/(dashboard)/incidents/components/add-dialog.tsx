@@ -191,7 +191,7 @@ export function AddDialog() {
                 queryHook={useSearchAreasQuery}
                 buildQuery={(search) => search}
                 getValue={(a) => a.code}
-                getLabel={(a) => a.name}
+                getLabel={(a) => `${a.name} (${a.code})`}
                 onSelect={(value) => console.log("Selected Area:", value)}
               />
             </div>
